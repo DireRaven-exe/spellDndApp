@@ -1,5 +1,6 @@
 package com.example.spellsdnd.utils
 
+
 /**
  * Перечисление всех классов DnD
  */
@@ -16,6 +17,7 @@ enum class DndClass {
     SORCERER,
     WARLOCK,
     WIZARD,
+    ARTIFICER,
     EMPTY
 }
 

@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.utils.DarkBlueColorTheme
@@ -59,7 +60,7 @@ fun LoadingScreen(isLoading: Boolean) {
             contentScale = ContentScale.Fit
         )
         Text(
-            text = "Please, wait...",
+            text = stringResource(R.string.please_wait),
             modifier = Modifier.padding(top = 30.dp)
                 .wrapContentSize(Alignment.Center),
             style = MaterialTheme.typography.h6,

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">spellDnd (На русском)</string>
+
+    <!-- Школы заклинаний -->
+    <string name="necromancy">некромантия</string>
+    <string name="evocation">воплощение</string>
+    <string name="illusion">иллюзия</string>
+    <string name="transmutation">преобразование</string>
+    <string name="divination">прорицание</string>
+    <string name="enchantment">очарование</string>
+    <string name="abjuration">ограждение</string>
+    <string name="conjuration">вызов</string>
+
+    <!--  Игровые Классы  -->
+    <string name="barbarian">Варвар</string>
+    <string name="bard">Бард</string>
+    <string name="cleric">Жрец</string>
+    <string name="druid">Друид</string>
+    <string name="fighter">Воин</string>
+    <string name="monk">Монах</string>
+    <string name="paladin">Паладин</string>
+    <string name="ranger">Следопыт</string>
+    <string name="rogue">Плут</string>
+    <string name="sorcerer">Чародей</string>
+    <string name="warlock">Колдун</string>
+    <string name="wizard">Волшебник</string>
+    <string name="empty">Отсутствует</string>
+
+    <!-- BottomNavigation -->
+    <string name="filters">фильтры</string>
+    <string name="home">главная</string>
+    <string name="favorites">избранное</string>
+
+    <!--Home Screen-->
+    <string name="successfully_added">Успешно добавлено</string>
+    <string name="already_added_this_spell">Вы уже добавили это заклинание в избранное</string>
+
+    <!--  Loading Screen  -->
+    <string name="please_wait">Пожалуйста, подождите…</string>
+
+    <!--TextFieldBox-->
+    <string name="cancel">отмена</string>
+    <string name="Search_spell">Поиск заклинания…</string>
+
+    <!--  Filters Screen  -->
+    <string name="level">уровень</string>
+    <string name="school">школа</string>
+    <string name="dnd_class">класс</string>
+    <string name="use_filters">фильтрация</string>
+
+    <!--  InfoCardSide  -->
+    <string name="range">Дистанция</string>
+    <string name="duration">Длительность</string>
+    <string name="casting_time">Время накладывания</string>
+    <string name="components">Компоненты</string>
+    <string name="higher_level"><b>На больших уровнях. </b></string>
+    <string name="material">Материал</string>
+    <string name="none_material">материал не нужен</string>
+</resources>

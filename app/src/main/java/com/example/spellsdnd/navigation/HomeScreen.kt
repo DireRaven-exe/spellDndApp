@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.utils.DarkBlueColorTheme
@@ -49,14 +50,14 @@ fun HomeScreen() {
                                 // элемент уже есть в списке, вывести сообщение об ошибке
                                 Toast.makeText(
                                     context,
-                                    "Вы уже добавили это заклинание в избранное",
+                                    context.getString(R.string.already_added_this_spell),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
                                 // добавляем элемент и выводим сообщение об успехе
                                 spellsFavoritesList.add(spellDetail)
                                 saveFavoritesToPrefs(context, spellsFavoritesList)
-                                Toast.makeText(context, "Успешно добавлено", Toast.LENGTH_SHORT)
+                                Toast.makeText(context, context.getString(R.string.successfully_added), Toast.LENGTH_SHORT)
                                     .show()
                             }
                         }

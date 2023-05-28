@@ -14,6 +14,8 @@ interface SpellsApi {
     @GET("/spells") // Указываем эндпоинт для получения списка заклинаний
     // Метод для выполнения GET-запроса
     fun getSpells(@Query("page") page: Int): Call<SpellResponse>
+    @GET("/spells/")
+    suspend fun searchSpells(@Query("search") query: String): Response<List<SpellDetail>>
 }
 
 object SpellManager {
@@ -60,5 +62,20 @@ object SpellManager {
         val regex = ".*[?&]page=(\\d+).*".toRegex()
         val matchResult = regex.find(url)
         return matchResult?.groupValues?.getOrNull(1)?.toIntOrNull()
+    }
+
+    suspend fun searchSpells(query: String): List<SpellDetail>? {
+        return try {
+            val response = spellsApi.searchSpells(query)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                // Обработка ошибки
+                null
+            }
+        } catch (e: Exception) {
+            // Обработка исключения
+            null
+        }
     }
 }

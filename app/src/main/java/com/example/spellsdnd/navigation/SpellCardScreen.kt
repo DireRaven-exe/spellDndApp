@@ -7,11 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.data.SpellDetail
-import com.example.spellsdnd.navigation.InfoCardSide
-import com.example.spellsdnd.navigation.MainCardSide
+import com.example.spellsdnd.card.InfoCardSide
+import com.example.spellsdnd.card.MainCardSide
 import com.example.spellsdnd.utils.DarkBlueColorTheme
 
 /**
