@@ -11,9 +11,9 @@ import com.example.spellsdnd.R
 import com.example.spellsdnd.data.SpellDetail
 import com.example.spellsdnd.utils.DarkBlueColorTheme
 import com.example.spellsdnd.utils.DndClass
+import com.example.spellsdnd.utils.MutableListManager.originalSpellsList
+import com.example.spellsdnd.utils.MutableListManager.spellsList
 import com.example.spellsdnd.utils.Utils.dndClassMap
-import com.example.spellsdnd.utils.Utils.originalSpellsList
-import com.example.spellsdnd.utils.Utils.spellsList
 import java.util.*
 
 

@@ -31,6 +31,7 @@
     <string name="filters">фильтры</string>
     <string name="home">главная</string>
     <string name="favorites">избранное</string>
+    <string name="settings">настройки\n</string>
 
     <!--Home Screen-->
     <string name="successfully_added">Успешно добавлено</string>
@@ -57,4 +58,9 @@
     <string name="higher_level"><b>На больших уровнях. </b></string>
     <string name="material">Материал</string>
     <string name="none_material">материал не нужен</string>
+
+
+    <string name="language">язык</string>
+    <string name="english">english</string>
+    <string name="russian">russian</string>
 </resources>

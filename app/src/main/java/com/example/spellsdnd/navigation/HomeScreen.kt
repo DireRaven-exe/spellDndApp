@@ -9,16 +9,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.utils.DarkBlueColorTheme
+import com.example.spellsdnd.utils.Favorites
+import com.example.spellsdnd.utils.Favorites.getFavoritesSpells
+import com.example.spellsdnd.utils.Favorites.getListBySelectedLanguage
+import com.example.spellsdnd.utils.Favorites.saveFavoritesToPrefs
+import com.example.spellsdnd.utils.MutableListManager.spellsList
 import com.example.spellsdnd.utils.TextFieldBox
-import com.example.spellsdnd.utils.Utils.spellsFavoritesList
-import com.example.spellsdnd.utils.Utils.spellsList
 
 /**
  * Метод, который отрисовывает
@@ -26,7 +27,7 @@ import com.example.spellsdnd.utils.Utils.spellsList
  * @param spellsList - список заклинаний
  */
 @Composable
-fun HomeScreen() {
+fun HomeScreen(selectedLanguage: MutableState<String>) {
     val filterText = remember { mutableStateOf("") }
     val context = LocalContext.current
     Column (
@@ -46,18 +47,18 @@ fun HomeScreen() {
                     Spacer(modifier = Modifier.weight(1f))
                     IconButton(
                         onClick = {
-                            if (spellsFavoritesList.contains(spellDetail)) {
+                            if (getListBySelectedLanguage(selectedLanguage).contains(spellDetail)) {
                                 // элемент уже есть в списке, вывести сообщение об ошибке
                                 Toast.makeText(
                                     context,
-                                    context.getString(R.string.already_added_this_spell),
+                                    "Вы уже добавили это заклинание в избранное",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
                                 // добавляем элемент и выводим сообщение об успехе
-                                spellsFavoritesList.add(spellDetail)
-                                saveFavoritesToPrefs(context, spellsFavoritesList)
-                                Toast.makeText(context, context.getString(R.string.successfully_added), Toast.LENGTH_SHORT)
+                                getListBySelectedLanguage(selectedLanguage).add(spellDetail)
+                                saveFavoritesToPrefs(context)
+                                Toast.makeText(context, "Успешно добавлено", Toast.LENGTH_SHORT)
                                     .show()
                             }
                         }

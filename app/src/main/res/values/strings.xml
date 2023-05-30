@@ -31,6 +31,7 @@
     <string name="filters">filters</string>
     <string name="home">home</string>
     <string name="favorites">favorites</string>
+    <string name="settings">settings\n</string>
 
     <!-- Home Screen -->
     <string name="successfully_added">Successfully added</string>
@@ -57,4 +58,8 @@
     <string name="higher_level"><b>"Higher level. "</b></string>
     <string name="material">Material</string>
     <string name="none_material">none</string>
+    <string name="language">language</string>
+    <string name="english">english</string>
+    <string name="russian">russian</string>
+
 </resources>
