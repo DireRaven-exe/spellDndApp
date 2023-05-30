@@ -1,11 +1,12 @@
 package com.example.spellsdnd.utils
-
+import androidx.compose.runtime.Composable
 import com.example.spellsdnd.R
 
 /**
  * Метод, который возвращает иконку класса
  * @param dndClass - название класса DnD
  */
+@Composable
 fun getIconResId(dndClass: DndClass): Int {
     return when (dndClass) {
             DndClass.BARBARIAN -> R.drawable.icon_barbarian
@@ -21,5 +22,6 @@ fun getIconResId(dndClass: DndClass): Int {
             DndClass.WARLOCK -> R.drawable.icon_warlock
             DndClass.WIZARD -> R.drawable.icon_wizard
             DndClass.EMPTY -> R.drawable.icon_all
-        }
+            DndClass.ARTIFICER -> R.drawable.icon_artificer
+    }
 }

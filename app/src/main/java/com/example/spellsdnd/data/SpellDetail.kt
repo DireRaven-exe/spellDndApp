@@ -26,26 +26,26 @@ package com.example.spellsdnd.data
  * @param document__license_url - ссылка на документ с лицензией
  */
 data class SpellDetail(
-    val slug: String, // id spell
-    val name: String, // name spell
-    val desc: String, // description spell
-    val higher_level: String, // it's desc spell if you use her on higher level
-    val page: String,
-    val range: String,
-    val components: String,
-    val material: String,
-    val ritual: String,
-    val duration: String,
-    val concentration: String,
-    val casting_time: String,
-    val level: String,
+    var slug: String, // id spell
+    var name: String, // name spell
+    var desc: String, // description spell
+    var higher_level: String, // it's desc spell if you use her on higher level
+    var page: String,
+    var range: String,
+    var components: String,
+    var material: String,
+    var ritual: String,
+    var duration: String,
+    var concentration: String,
+    var casting_time: String,
+    var level: String,
     val level_int: Int,
-    val school: String,
-    val dnd_class: String,
-    val archetype: String,
-    val circles: String,
-    val document__slug: String,
-    val document__title: String,
-    val document__license_url: String,
+    var school: String,
+    var dnd_class: String,
+    var archetype: String,
+    var circles: String,
+    var document__slug: String,
+    var document__title: String,
+    var document__license_url: String,
 )
 

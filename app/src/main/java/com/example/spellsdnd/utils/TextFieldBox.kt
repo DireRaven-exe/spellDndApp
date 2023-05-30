@@ -2,7 +2,6 @@
 
 package com.example.spellsdnd.utils
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -18,16 +17,16 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-
-
+import com.example.spellsdnd.R
 
 
 /**
- * Метод, который отображает TextField и Box с иконкой "Фильтр"
+ * Метод, который отображает TextField для поиска заклинаний
  */
 @Composable
 fun TextFieldBox(filterText: MutableState<String>) {
@@ -69,7 +68,7 @@ fun TextFieldBox(filterText: MutableState<String>) {
                 ),
                 label = {
                     Text(
-                        text = "Search spell...",
+                        text = stringResource(R.string.Search_spell),
                         color = DarkBlueColorTheme.textFieldTitleColor,
                         modifier = Modifier.padding(start = 1.dp)
                     )
@@ -107,7 +106,7 @@ fun TextFieldBox(filterText: MutableState<String>) {
                     .align(Alignment.CenterEnd),
 
             ) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel))
             }
         }
     }

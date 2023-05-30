@@ -1,4 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">spellDnd</string>
+
+    <!-- Schools of spell -->
+    <string name="necromancy">necromancy</string>
+    <string name="evocation">evocation</string>
+    <string name="illusion">illusion</string>
+    <string name="transmutation">transmutation</string>
+    <string name="divination">divination</string>
+    <string name="enchantment">enchantment</string>
+    <string name="abjuration">abjuration</string>
+    <string name="conjuration">conjuration</string>
+
+    <!--  Classes of games  -->
+    <string name="barbarian">Barbarian</string>
+    <string name="bard">Bard</string>
+    <string name="cleric">Cleric</string>
+    <string name="druid">Druid</string>
+    <string name="fighter">Fighter</string>
+    <string name="monk">Monk</string>
+    <string name="paladin">Paladin</string>
+    <string name="ranger">Ranger</string>
+    <string name="rogue">Rogue</string>
+    <string name="sorcerer">Sorcerer</string>
+    <string name="warlock">Warlock</string>
+    <string name="wizard">Wizard</string>
+    <string name="empty">Empty</string>
+
+    <!-- BottomNavigation -->
+    <string name="filters">filters</string>
+    <string name="home">home</string>
+    <string name="favorites">favorites</string>
+    <string name="settings">settings\n</string>
+
+    <!-- Home Screen -->
+    <string name="successfully_added">Successfully added</string>
+    <string name="already_added_this_spell">You already added this spell to your favorites</string>
+
+    <!--  Loading Screen  -->
+    <string name="please_wait">Please, wait…</string>
+
+    <!-- TextFieldBox -->
+    <string name="cancel" tools:ignore="ButtonCase">cancel</string>
+    <string name="Search_spell">Search spell…</string>
+
+    <!--  Filters Screen  -->
+    <string name="level">Level</string>
+    <string name="school">School</string>
+    <string name="dnd_class">Class</string>
+    <string name="use_filters">use filters</string>
+
+    <!--  InfoCardSide  -->
+    <string name="range">Range</string>
+    <string name="duration">Duration</string>
+    <string name="casting_time">Casting Time</string>
+    <string name="components">Components</string>
+    <string name="higher_level"><b>"Higher level. "</b></string>
+    <string name="material">Material</string>
+    <string name="none_material">none</string>
+    <string name="language">language</string>
+    <string name="english">english</string>
+    <string name="russian">russian</string>
+
 </resources>

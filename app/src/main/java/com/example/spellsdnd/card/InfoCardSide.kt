@@ -1,4 +1,4 @@
-package com.example.spellsdnd.navigation
+package com.example.spellsdnd.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,16 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.data.SpellDetail
 import com.example.spellsdnd.utils.Utils
 import com.example.spellsdnd.utils.isLongText
 import com.example.spellsdnd.utils.schoolCheck
-import java.util.Locale
 
 /**
  * Метод, отображающий информацию об отдельном заклинании
@@ -75,9 +74,10 @@ fun InfoCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
     }
 }
 
+@Composable
 fun checkMaterial(material: String): String {
     return if (material == "") {
-        "none"
+        stringResource(R.string.none_material)
     } else {
         material
     }
@@ -101,13 +101,13 @@ fun NameAndSchoolBox(spellDetail: SpellDetail) {
                 fontSize = MaterialTheme.typography.h6.fontSize * 0.5f
             )
             Text(
-                text = spellDetail.school + " - " + spellDetail.level_int.toString(),
+                text = spellDetail.level + ", " + spellDetail.school,
                 style = MaterialTheme.typography.h6,
                 color = Color.White,
                 modifier = Modifier
                     .padding(bottom = 2.dp)
                     .align(Alignment.CenterHorizontally),
-                fontFamily = Utils.customFont_im_fell_english_regular,
+                //fontFamily = Utils.customFont_im_fell_english_regular,
                 fontSize = MaterialTheme.typography.h6.fontSize * 0.5f
             )
         }
@@ -128,12 +128,12 @@ fun ParametersBox(spellDetail: SpellDetail) {
         ) {
             ShowParameter(
                 iconParameter = R.drawable.icon_radius,
-                nameParameter = "Range",
+                nameParameter = stringResource(R.string.range),
                 textParameter = spellDetail.range
             )
             ShowParameter(
                 iconParameter = R.drawable.icon_duration,
-                nameParameter = "Duration",
+                nameParameter = stringResource(R.string.duration),
                 textParameter = spellDetail.duration
             )
         }
@@ -141,12 +141,12 @@ fun ParametersBox(spellDetail: SpellDetail) {
         ) {
             ShowParameter(
                 iconParameter = R.drawable.icon_casting_time,
-                nameParameter = "Casting Time",
+                nameParameter = stringResource(R.string.casting_time),
                 textParameter = spellDetail.casting_time
             )
             ShowParameter(
                 iconParameter = R.drawable.icon_components,
-                nameParameter = "Components",
+                nameParameter = stringResource(R.string.components),
                 textParameter = spellDetail.components
             )
         }
@@ -220,19 +220,19 @@ fun DescriptionBox(spellDetail: SpellDetail) {
         }
     }
 }
-
+@Composable
 fun checkDesc(spellDetail: SpellDetail) : String {
     return if (spellDetail.higher_level == "") {
         spellDetail.desc
     }
-    else spellDetail.desc + "\n" + "Higher level. " + spellDetail.higher_level
+    else spellDetail.desc + "\n\n" + stringResource(R.string.higher_level) + spellDetail.higher_level
 }
 
 @Composable
 fun MaterialBox(spellDetail: SpellDetail) {
     Column {
         Text(
-            text = "Material",
+            text = stringResource(R.string.material),
             style = MaterialTheme.typography.body1,
             color = Color.White,
             fontFamily = Utils.customFont_im_fell_english_regular,

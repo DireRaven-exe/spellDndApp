@@ -1,4 +1,4 @@
-package com.example.spellsdnd.navigation
+package com.example.spellsdnd.card
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -38,11 +38,11 @@ import com.example.spellsdnd.R
 import com.example.spellsdnd.data.SpellDetail
 import com.example.spellsdnd.utils.DndClass
 import com.example.spellsdnd.utils.Utils
+import com.example.spellsdnd.utils.Utils.dndClassMap
 import com.example.spellsdnd.utils.checkDuration
 import com.example.spellsdnd.utils.getIconResId
 import com.example.spellsdnd.utils.isLongText
 import com.example.spellsdnd.utils.schoolCheck
-import java.util.Locale
 
 /**
  * Метод, отображающий основной экран со списком карточек заклинаний
@@ -110,24 +110,23 @@ fun DrawCardComponents(spellDetail: SpellDetail) {
                     .scale(1f),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                BottomBox(
-                    textParameter = spellDetail.range,
-                    iconParameter = R.drawable.icon_radius
-                )
-                BottomBox(
-                    textParameter = spellDetail.casting_time,
-                    iconParameter = R.drawable.icon_casting_time
-                )
-                BottomBox(
-                    textParameter = spellDetail.duration,
-                    iconParameter = R.drawable.icon_duration
-                )
-                BottomBox(
-                    textParameter = spellDetail.components,
-                    iconParameter = R.drawable.icon_components
-                )
-            }
-
+                    BottomBox(
+                        textParameter = spellDetail.range,
+                        iconParameter = R.drawable.icon_radius
+                    )
+                    BottomBox(
+                        textParameter = spellDetail.casting_time,
+                        iconParameter = R.drawable.icon_casting_time
+                    )
+                    BottomBox(
+                        textParameter = spellDetail.duration,
+                        iconParameter = R.drawable.icon_duration
+                    )
+                    BottomBox(
+                        textParameter = spellDetail.components,
+                        iconParameter = R.drawable.icon_components
+                    )
+                }
         }
     }
 }
@@ -139,19 +138,15 @@ fun DrawCardComponents(spellDetail: SpellDetail) {
  */
 @Composable
 fun TitleBox(spellDetail: SpellDetail) {
-    val classes: MutableList<DndClass> = spellDetail.dnd_class.split(", ").mapNotNull {
-            className ->
-        val trimmedClassName = className.trim().toUpperCase(Locale.ROOT)
-        val dndClass = try {
-            DndClass.valueOf(trimmedClassName)
-        } catch (e: IllegalArgumentException) {
-            null
-        }
+    val classes: MutableList<DndClass> = spellDetail.dnd_class.split(", ").mapNotNull { className ->
+        val trimmedClassName = className.trim()
+        val dndClass = dndClassMap[trimmedClassName]
         if (dndClass == null) {
             Log.e("MyApp", "Invalid DndClass value: $trimmedClassName")
         }
         dndClass
     }.toMutableList()
+
 // Добавляем DndClass.EMPTY, если список classes оказался пустым
     if (classes.isEmpty()) {
         classes.add(DndClass.EMPTY)
