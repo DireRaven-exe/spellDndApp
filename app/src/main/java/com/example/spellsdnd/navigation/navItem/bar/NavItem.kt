@@ -1,4 +1,4 @@
-package com.example.spellsdnd.navigation.bar
+package com.example.spellsdnd.navigation.navItem.bar
 
 data class NavItem(
     val label: String,

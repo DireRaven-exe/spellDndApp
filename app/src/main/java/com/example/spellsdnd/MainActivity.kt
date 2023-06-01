@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -21,19 +20,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.spellsdnd.navigation.FavoritesScreen
-import com.example.spellsdnd.navigation.FiltersScreen
-import com.example.spellsdnd.navigation.HomeScreen
-import com.example.spellsdnd.navigation.LoadingScreen
-import com.example.spellsdnd.navigation.SettingsScreen
-import com.example.spellsdnd.navigation.bar.NavItem
-import com.example.spellsdnd.navigation.bar.Screens
-import com.example.spellsdnd.objects.getSelectedLanguage
-import com.example.spellsdnd.objects.getSharedPreferences
-import com.example.spellsdnd.retrofit.SpellManager.getAllSpells
+import com.example.spellsdnd.data.SpellDetail
+import com.example.spellsdnd.navigation.favorites.FavoritesScreen
+import com.example.spellsdnd.navigation.filter.FiltersScreen
+import com.example.spellsdnd.navigation.home.HomeScreen
+import com.example.spellsdnd.navigation.home.LoadingScreen
+import com.example.spellsdnd.navigation.settings.SettingsScreen
+import com.example.spellsdnd.navigation.navItem.bar.NavItem
+import com.example.spellsdnd.navigation.navItem.bar.Screens
+import com.example.spellsdnd.navigation.settings.getSelectedLanguage
+import com.example.spellsdnd.navigation.settings.getSharedPreferences
+import com.example.spellsdnd.navigation.spell.card.pin.PinSpellCard
+import com.example.spellsdnd.retrofit.SpellRusManager.getAllEnSpells
 import com.example.spellsdnd.retrofit.SpellRusManager.getAllRusSpells
 import com.example.spellsdnd.ui.theme.SpellsDnDTheme
-import com.example.spellsdnd.utils.DarkBlueColorTheme
+import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
+import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.screenActiveColor
+import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.screenInactiveColor
 import com.example.spellsdnd.utils.MutableListManager.originalSpellsList
 import com.example.spellsdnd.utils.MutableListManager.spellsList
 import java.util.Locale
@@ -64,7 +67,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navItems = listOf(
                     NavItem(stringResource(id = R.string.filters), R.drawable.icon_filter, Screens.Filters),
-                    NavItem(stringResource(id = R.string.home), R.drawable.icon_home_white_color, Screens.Home),
+                    NavItem(stringResource(id = R.string.home), R.drawable.icon_home, Screens.Home),
                     NavItem(stringResource(id = R.string.favorites), R.drawable.icon_favorites_white, Screens.Favorites),
                     NavItem(stringResource(id = R.string.settings), R.drawable.icon_settings, Screens.Settings),
                 )
@@ -79,17 +82,22 @@ class MainActivity : ComponentActivity() {
                                 backgroundColor = DarkBlueColorTheme.bottomBarBackgroundColor
                             ) {
                                 navItems.forEach { item ->
+                                    val selectedIconColor = if (currentScreen == item.route) {
+                                        screenActiveColor // Цвет иконки, когда находимся на соответствующем экране
+                                    } else {
+                                        screenInactiveColor// Цвет иконки для остальных экранов
+                                    }
                                     BottomNavigationItem(
                                         icon = {
-                                            Image(
+                                            Icon(
                                                 painterResource(item.icon),
-                                                contentDescription = null
+                                                contentDescription = null,
+                                                tint = selectedIconColor
                                             )
                                         },
                                         label = {
                                             Text(item.label,
-                                                color = DarkBlueColorTheme.textColor,
-                                                modifier = Modifier.align(alignment = Alignment.Bottom)
+                                                color = selectedIconColor,
                                             ) },
                                         selected = currentScreen == item.route,
                                         onClick = {
@@ -107,24 +115,43 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.padding(innerPadding)
                         ) {
                             composable(Screens.Filters.route) {
-                                FiltersScreen(onApplyFilter = { _ -> })
+                                FiltersScreen(selectedLanguage, onApplyFilter = { _ -> })
                             }
                             composable(Screens.Home.route) {
-                                HomeScreen(selectedLanguage)
+                                HomeScreen(navController, selectedLanguage)
                             }
                             composable(Screens.Favorites.route) {
-                                FavoritesScreen(selectedLanguage)
+                                FavoritesScreen(navController, selectedLanguage)
                             }
                             composable(Screens.Settings.route) {
                                 SettingsScreen(selectedLanguage, sharedPreferences)
+                            }
+                            composable(Screens.Spell("{slug}").route) { backStackEntry ->
+                                val spellSlug = backStackEntry.arguments?.getString("slug")
+                                spellSlug?.let { slug ->
+                                    val spellDetail = getSpellDetailBySlug(slug)
+                                    PinSpellCard(context, selectedLanguage, spellDetail!!, navController, isFavorite = false)
+                                }
+                            }
+                            composable(Screens.FavoriteSpell("{slug}", isFavorite = true).route) { backStackEntry ->
+                                val spellSlug = backStackEntry.arguments?.getString("slug")
+                                spellSlug?.let { slug ->
+                                    val spellDetail = getSpellDetailBySlug(slug)
+                                    PinSpellCard(context, selectedLanguage, spellDetail!!, navController, isFavorite = true)
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        //spellListRequest(isLoading)
     }
+}
+
+fun getSpellDetailBySlug(slug: String): SpellDetail? {
+    // Ваш код для получения данных о заклинании по его слагу (идентификатору)
+    // Например, вы можете использовать список `spellsList`, чтобы найти соответствующее заклинание
+    return spellsList.find { it.slug == slug }
 }
 
 /**
@@ -150,11 +177,11 @@ fun spellListRequest(isLoading: MutableState<Boolean>, value: String) {
         }
     }
     else {
-        getAllSpells { spells, error -> // Вызываем функцию getAllSpells и передаем ей список для обновления
+        getAllEnSpells() { spells, error -> // Вызываем функцию getAllSpells и передаем ей список для обновления
             if (error != null) { // Обработка ошибки
                 isLoading.value = false // Устанавливаем флаг isLoading в false при ошибке загрузки
                 Log.e("not ok", "ERROR")
-                return@getAllSpells
+                return@getAllEnSpells
             }
             if (spells != null) {
                 spellsList.addAll(spells) // Добавляем полученные заклинания в список spellsList

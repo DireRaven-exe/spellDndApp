@@ -9,10 +9,10 @@ import com.example.spellsdnd.data.SpellDetail
 
 /**
  * Метод, который проверяет, к какой школе заклинаний относится переданное ей заклинание
- * Возвращает цвет и картинку с этой школой
+ * @return Pair(drawableId, backgroundColor) - цвет и картинка этой школы
  */
 @Composable
-fun schoolCheck(spellDetail: SpellDetail): Pair<Int, Color> {
+fun applySchoolStyle(spellDetail: SpellDetail): Pair<Int, Color> {
     val drawableId: Int
     val backgroundColor: Color
     when (spellDetail.school.lowercase()) {

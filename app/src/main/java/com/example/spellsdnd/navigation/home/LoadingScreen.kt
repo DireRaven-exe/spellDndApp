@@ -1,4 +1,4 @@
-package com.example.spellsdnd.navigation
+package com.example.spellsdnd.navigation.home
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -19,13 +19,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
-import com.example.spellsdnd.utils.DarkBlueColorTheme
+import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
 import com.example.spellsdnd.utils.Utils
 
 /**

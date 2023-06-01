@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface SpellsApi {
+interface OpenVApi {
     @GET("/spells") // Указываем эндпоинт для получения списка заклинаний
     // Метод для выполнения GET-запроса
     fun getSpells(@Query("page") page: Int): Call<SpellResponse>
@@ -24,13 +24,13 @@ object SpellManager {
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    private val spellsApi = retrofit.create(SpellsApi::class.java)
+    private val openVApi = retrofit.create(OpenVApi::class.java)
     fun getAllSpells(callback: (List<SpellDetail>?, Throwable?) -> Unit) {
         val spellsList = mutableListOf<SpellDetail>() // Создаем пустой список для заклинаний
 
         // Внутренняя функция, которая будет вызываться рекурсивно для получения следующей страницы
         fun getSpellsPage(page: Int) {
-            val call = spellsApi.getSpells(page)
+            val call = openVApi.getSpells(page)
             call.enqueue(object : Callback<SpellResponse> {
                 override fun onResponse(call: Call<SpellResponse>, response: Response<SpellResponse>) {
                     if (response.isSuccessful) {
@@ -66,7 +66,7 @@ object SpellManager {
 
     suspend fun searchSpells(query: String): List<SpellDetail>? {
         return try {
-            val response = spellsApi.searchSpells(query)
+            val response = openVApi.searchSpells(query)
             if (response.isSuccessful) {
                 response.body()
             } else {
