@@ -1,4 +1,4 @@
-package com.example.spellsdnd.card
+package com.example.spellsdnd.navigation.spell.card.pin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -32,21 +33,20 @@ import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.data.SpellDetail
 import com.example.spellsdnd.utils.Utils
-import com.example.spellsdnd.utils.isLongText
-import com.example.spellsdnd.utils.schoolCheck
+import com.example.spellsdnd.utils.applySchoolStyle
 
 /**
  * Метод, отображающий информацию об отдельном заклинании
  * @param spellDetail - информация о заклинании
  */
 @Composable
-fun InfoCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
+fun PinSpellCardSideInfo(spellDetail: SpellDetail, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(
-                top = 0.dp,
-                start = 30.dp,
-                end = 30.dp,
+                top = 50.dp,
+                start = 10.dp,
+                end = 10.dp,
                 bottom = 30.dp
             )
             .aspectRatio(0.65f)
@@ -57,7 +57,7 @@ fun InfoCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
     ) {
         Box(
             modifier = Modifier
-                .background(schoolCheck(spellDetail = spellDetail).second)
+                .background(applySchoolStyle(spellDetail = spellDetail).second)
                 .padding(16.dp)
         ) {
             Column {
@@ -98,7 +98,7 @@ fun NameAndSchoolBox(spellDetail: SpellDetail) {
                     .padding(bottom = 1.dp)
                     .align(Alignment.CenterHorizontally),
                 fontFamily = Utils.customFont_im_fell_english_regular,
-                fontSize = MaterialTheme.typography.h6.fontSize * 0.5f
+                fontSize = MaterialTheme.typography.h6.fontSize * 0.8f
             )
             Text(
                 text = spellDetail.level + ", " + spellDetail.school,
@@ -108,7 +108,7 @@ fun NameAndSchoolBox(spellDetail: SpellDetail) {
                     .padding(bottom = 2.dp)
                     .align(Alignment.CenterHorizontally),
                 //fontFamily = Utils.customFont_im_fell_english_regular,
-                fontSize = MaterialTheme.typography.h6.fontSize * 0.5f
+                fontSize = MaterialTheme.typography.h6.fontSize * 0.7f
             )
         }
 
@@ -117,38 +117,41 @@ fun NameAndSchoolBox(spellDetail: SpellDetail) {
 
 @Composable
 fun ParametersBox(spellDetail: SpellDetail) {
-    Row(
+    LazyRow(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().height(100.dp)
             .background(Color(0xFFE1D1B2)),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Column(
-            modifier = Modifier
-        ) {
-            ShowParameter(
-                iconParameter = R.drawable.icon_radius,
-                nameParameter = stringResource(R.string.range),
-                textParameter = spellDetail.range
-            )
-            ShowParameter(
-                iconParameter = R.drawable.icon_duration,
-                nameParameter = stringResource(R.string.duration),
-                textParameter = spellDetail.duration
-            )
-        }
-        Column(modifier = Modifier
-        ) {
-            ShowParameter(
-                iconParameter = R.drawable.icon_casting_time,
-                nameParameter = stringResource(R.string.casting_time),
-                textParameter = spellDetail.casting_time
-            )
-            ShowParameter(
-                iconParameter = R.drawable.icon_components,
-                nameParameter = stringResource(R.string.components),
-                textParameter = spellDetail.components
-            )
+        item {
+            Column(
+                modifier = Modifier
+            ) {
+                ShowParameter(
+                    iconParameter = R.drawable.icon_radius,
+                    nameParameter = stringResource(R.string.range),
+                    textParameter = spellDetail.range
+                )
+                ShowParameter(
+                    iconParameter = R.drawable.icon_duration,
+                    nameParameter = stringResource(R.string.duration),
+                    textParameter = spellDetail.duration
+                )
+            }
+            Column(
+                modifier = Modifier
+            ) {
+                ShowParameter(
+                    iconParameter = R.drawable.icon_casting_time,
+                    nameParameter = stringResource(R.string.casting_time),
+                    textParameter = spellDetail.casting_time
+                )
+                ShowParameter(
+                    iconParameter = R.drawable.icon_components,
+                    nameParameter = stringResource(R.string.components),
+                    textParameter = spellDetail.components
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.height(10.dp))
@@ -172,16 +175,16 @@ fun ShowParameter(iconParameter: Int, nameParameter: String, textParameter: Stri
             Text(
                 text = nameParameter.uppercase(),
                 style = MaterialTheme.typography.h6.copy(
-                    fontSize = MaterialTheme.typography.h6.fontSize * 0.5f
+                    fontSize = MaterialTheme.typography.h6.fontSize * 0.65f
                 ), // Уменьшаем размер шрифта
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 textAlign = TextAlign.Center
             )
             Text(
-                text = isLongText(textParameter.uppercase()),
+                text = textParameter.uppercase(),
                 style = MaterialTheme.typography.h6.copy(
-                    fontSize = MaterialTheme.typography.h6.fontSize * 0.4f
+                    fontSize = MaterialTheme.typography.h6.fontSize * 0.5f
                 ), // Уменьшаем размер шрифта
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Black,
@@ -206,8 +209,8 @@ fun DescriptionBox(spellDetail: SpellDetail) {
                     text = checkDesc(spellDetail),
                     style = MaterialTheme.typography.body1,
                     color = Color.Black,
-                    fontFamily = Utils.customFont_im_fell_english_regular,
-                    fontSize = MaterialTheme.typography.h6.fontSize * 0.5f,
+                    //fontFamily = Utils.customFont_im_fell_english_regular,
+                    fontSize = MaterialTheme.typography.h6.fontSize * 0.7f,
                     modifier = Modifier
                         .padding(
                             start = 10.dp,
@@ -235,8 +238,8 @@ fun MaterialBox(spellDetail: SpellDetail) {
             text = stringResource(R.string.material),
             style = MaterialTheme.typography.body1,
             color = Color.White,
-            fontFamily = Utils.customFont_im_fell_english_regular,
-            fontSize = MaterialTheme.typography.h6.fontSize * 0.5f,
+            //fontFamily = Utils.customFont_im_fell_english_regular,
+            fontSize = MaterialTheme.typography.h6.fontSize * 0.9f,
             modifier = Modifier
                 .padding(
                     top = 5.dp,
@@ -255,8 +258,8 @@ fun MaterialBox(spellDetail: SpellDetail) {
                         text = checkMaterial(spellDetail.material),
                         style = MaterialTheme.typography.body1,
                         color = Color.Black,
-                        fontFamily = Utils.customFont_im_fell_english_regular,
-                        fontSize = MaterialTheme.typography.h6.fontSize * 0.5f,
+                        //fontFamily = Utils.customFont_im_fell_english_regular,
+                        fontSize = MaterialTheme.typography.h6.fontSize * 0.8f,
                         modifier = Modifier
                             .padding(
                                 start = 10.dp,

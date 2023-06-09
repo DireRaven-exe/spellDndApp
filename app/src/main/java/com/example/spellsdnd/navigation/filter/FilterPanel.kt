@@ -1,4 +1,4 @@
-package com.example.spellsdnd.navigation
+package com.example.spellsdnd.navigation.filter
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,7 +46,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
-import com.example.spellsdnd.utils.DarkBlueColorTheme
+import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
+
 
 /**
  * Метод, который отображает одно поле для фильтрации по выбранному параметру
@@ -64,10 +65,9 @@ import com.example.spellsdnd.utils.DarkBlueColorTheme
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Filter(
+fun FilterPanel(
     label: String,
     items: List<String>,
-    icon: Int,
     selectedItems: MutableSet<String>,
     onFilterChange: (List<String>) -> Unit,
 ) {
@@ -107,7 +107,7 @@ fun Filter(
                     .align(Alignment.CenterVertically)
             ) {
                 Image(
-                    painter = painterResource(id = icon),
+                    painter = painterResource(id = R.drawable.icon_list_filter),
                     contentDescription = "Expand $label menu",
                     modifier = Modifier.size(36.dp),
                 )
@@ -157,6 +157,7 @@ fun Filter(
                     //Кнопка отмены
                     onClick = {
                         selectedItems.clear()
+                        textState = "" // Очистка текстового поля
                         keyboardController?.hide()
                         isKeyboardVisible.value = false
                         focusManager.clearFocus()

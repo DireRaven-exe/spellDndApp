@@ -1,13 +1,7 @@
-package com.example.spellsdnd.objects
+package com.example.spellsdnd.navigation.settings
 
 import android.content.Context
 import android.content.SharedPreferences
-
-object Settings {
-    //val context = LocalContext.current
-    //val sharedPreferences = remember { getSharedPreferences(context) }
-}
-
 
 /**
  *  getSharedPreferences - Получение объекта SharedPreferences

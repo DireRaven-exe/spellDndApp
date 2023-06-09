@@ -1,7 +1,6 @@
-package com.example.spellsdnd.navigation
+package com.example.spellsdnd.navigation.home
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,14 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.spellsdnd.R
-import com.example.spellsdnd.utils.DarkBlueColorTheme
-import com.example.spellsdnd.utils.Favorites
-import com.example.spellsdnd.utils.Favorites.getFavoritesSpells
-import com.example.spellsdnd.utils.Favorites.getListBySelectedLanguage
-import com.example.spellsdnd.utils.Favorites.saveFavoritesToPrefs
+import com.example.spellsdnd.navigation.spell.SpellCardScreen
+import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
+import com.example.spellsdnd.navigation.favorites.Favorites.getListBySelectedLanguage
+import com.example.spellsdnd.navigation.favorites.Favorites.saveFavoritesToPrefs
+import com.example.spellsdnd.navigation.navItem.bar.Screens
 import com.example.spellsdnd.utils.MutableListManager.spellsList
 import com.example.spellsdnd.utils.TextFieldBox
+import com.example.spellsdnd.utils.Utils.isVisibleSpell
 
 /**
  * Метод, который отрисовывает
@@ -27,10 +28,13 @@ import com.example.spellsdnd.utils.TextFieldBox
  * @param spellsList - список заклинаний
  */
 @Composable
-fun HomeScreen(selectedLanguage: MutableState<String>) {
+fun HomeScreen(navController: NavController, selectedLanguage: MutableState<String>) {
     val filterText = remember { mutableStateOf("") }
     val context = LocalContext.current
-    Column (
+
+    val isPinSpell = remember { mutableStateOf(false) }
+
+    Column(
         modifier = Modifier.background(DarkBlueColorTheme.mainBackgroundColor)
     ) {
         TextFieldBox(filterText = filterText)
@@ -38,8 +42,9 @@ fun HomeScreen(selectedLanguage: MutableState<String>) {
             items(
                 spellsList.filter { spellDetail -> // Фильтрация карточек
                     spellDetail.school.contains(filterText.value, ignoreCase = true) ||
-                    spellDetail.name.contains(filterText.value, ignoreCase = true)
-            }) { spellDetail ->
+                            spellDetail.name.contains(filterText.value, ignoreCase = true)
+                }
+            ) { spellDetail ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -51,31 +56,45 @@ fun HomeScreen(selectedLanguage: MutableState<String>) {
                                 // элемент уже есть в списке, вывести сообщение об ошибке
                                 Toast.makeText(
                                     context,
-                                    "Вы уже добавили это заклинание в избранное",
+                                    R.string.already_added_this_spell,
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
                                 // добавляем элемент и выводим сообщение об успехе
                                 getListBySelectedLanguage(selectedLanguage).add(spellDetail)
                                 saveFavoritesToPrefs(context)
-                                Toast.makeText(context, "Успешно добавлено", Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(
+                                    context,
+                                    R.string.successfully_added,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     ) {
-                        Image(
+                        Icon(
                             painter = painterResource(R.drawable.icon_favorites_white),
                             contentDescription = "Add to favorites",
+                            tint = DarkBlueColorTheme.screenInactiveColor,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            isVisibleSpell.value = true
+                            navController.navigate(Screens.Spell(spellDetail.slug).route)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.icon_lock),
+                            contentDescription = "Pin Spell Card",
+                            tint = DarkBlueColorTheme.screenInactiveColor,
                             modifier = Modifier.size(24.dp)
                         )
                     }
                 }
                 SpellCardScreen(spellDetail = spellDetail)
-                Divider(
-                    modifier = Modifier.height(6.dp)
-                )
+                Divider(modifier = Modifier.height(6.dp))
             }
         }
     }
 }
-

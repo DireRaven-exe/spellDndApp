@@ -25,3 +25,23 @@ fun getIconResId(dndClass: DndClass): Int {
             DndClass.ARTIFICER -> R.drawable.icon_artificer
     }
 }
+
+/**
+ * Перечисление всех классов DnD
+ */
+enum class DndClass {
+        BARBARIAN,
+        BARD,
+        CLERIC,
+        DRUID,
+        FIGHTER,
+        MONK,
+        PALADIN,
+        RANGER,
+        ROGUE,
+        SORCERER,
+        WARLOCK,
+        WIZARD,
+        ARTIFICER,
+        EMPTY
+}

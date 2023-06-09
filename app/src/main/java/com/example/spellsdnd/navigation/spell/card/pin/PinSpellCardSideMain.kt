@@ -1,4 +1,4 @@
-package com.example.spellsdnd.card
+package com.example.spellsdnd.navigation.spell.card.pin
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -39,24 +39,23 @@ import com.example.spellsdnd.data.SpellDetail
 import com.example.spellsdnd.utils.DndClass
 import com.example.spellsdnd.utils.Utils
 import com.example.spellsdnd.utils.Utils.dndClassMap
-import com.example.spellsdnd.utils.checkDuration
 import com.example.spellsdnd.utils.getIconResId
+import com.example.spellsdnd.utils.applySchoolStyle
 import com.example.spellsdnd.utils.isLongText
-import com.example.spellsdnd.utils.schoolCheck
 
 /**
  * Метод, отображающий основной экран со списком карточек заклинаний
  * @param spellDetail - информация о заклинании
  */
 @Composable
-fun MainCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
+fun PinSpellCardSideMain(spellDetail: SpellDetail, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxSize()
             .padding(
                 top = 0.dp,
-                start = 30.dp,
-                end = 30.dp,
+                start = 10.dp,
+                end = 10.dp,
                 bottom = 30.dp
             )
             .aspectRatio(0.65f)
@@ -77,7 +76,7 @@ fun MainCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
 fun DrawCardComponents(spellDetail: SpellDetail) {
     Column(
         modifier = Modifier
-            .background(schoolCheck(spellDetail).second) // Устанавливаем прозрачный фон
+            .background(applySchoolStyle(spellDetail).second) // Устанавливаем прозрачный фон
             .fillMaxSize()
     ) {
         TitleBox(spellDetail = spellDetail)
@@ -95,7 +94,7 @@ fun DrawCardComponents(spellDetail: SpellDetail) {
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 fontFamily = Utils.customFont_im_fell_english_regular,
-                fontSize = MaterialTheme.typography.h6.fontSize * 0.60f,
+                fontSize = MaterialTheme.typography.h6.fontSize * 0.8f,
                 modifier = Modifier.padding(start = 10.dp)
             )
 
@@ -179,7 +178,7 @@ fun TitleBox(spellDetail: SpellDetail) {
             fontFamily = Utils.customFont_im_fell_english_regular,
             color = Color.White,
             textAlign = TextAlign.Center,
-            fontSize = MaterialTheme.typography.h6.fontSize * 0.60f,
+            fontSize = MaterialTheme.typography.h6.fontSize * 0.9f,
             modifier = Modifier
                 .padding(top = 5.dp)
                 .fillMaxWidth(), // Занимаем максимальную доступную ширину
@@ -215,7 +214,7 @@ fun ImageBox(spellDetail: SpellDetail) {
                 .aspectRatio(0.90f) // Устанавливаем соотношение сторон для Box
         ) {
             Image(
-                painter = painterResource(id = schoolCheck(spellDetail).first),
+                painter = painterResource(id = applySchoolStyle(spellDetail).first),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.fillMaxSize()
@@ -277,9 +276,9 @@ fun BottomBox(textParameter: String, iconParameter: Int) {
                 .padding(end = 4.dp)
         )
         Text(
-            text = checkDuration(isLongText(textParameter.uppercase())),
+            text = isLongText(textParameter.uppercase()),
             style = MaterialTheme.typography.h6.copy(
-                fontSize = MaterialTheme.typography.h6.fontSize * 0.35f
+                fontSize = MaterialTheme.typography.h6.fontSize * 0.5f
             ), // Уменьшаем размер шрифта
             fontWeight = FontWeight.SemiBold,
             color = Color.White,
