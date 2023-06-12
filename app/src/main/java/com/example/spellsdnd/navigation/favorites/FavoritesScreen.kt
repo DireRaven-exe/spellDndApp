@@ -1,10 +1,12 @@
 package com.example.spellsdnd.navigation.favorites
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -25,13 +27,13 @@ import com.example.spellsdnd.navigation.navItem.bar.Screens
 import com.example.spellsdnd.utils.TextFieldBox
 import com.example.spellsdnd.utils.Utils
 
-
+/**
+ * Метод, который отрисовывает поле для поиска/фильтра
+ * избранных заклинаний и сами карточки заклинаний
+ */
 @Composable
 fun FavoritesScreen(navController: NavController, selectedLanguage: MutableState<String>) {
     val filterText = remember { mutableStateOf("") }
-
-    val context = LocalContext.current
-    loadFavoritesFromPrefs(context)
 
     Column (
         modifier = Modifier.background(DarkBlueColorTheme.mainBackgroundColor)
@@ -43,44 +45,18 @@ fun FavoritesScreen(navController: NavController, selectedLanguage: MutableState
                         spellDetail.name.contains(filterText.value, ignoreCase = true)
             }
             ) { spellDetail ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(
-                        onClick = {
-                            Utils.isVisibleSpell.value = true
-                            navController.navigate(Screens.FavoriteSpell(spellDetail.slug, true).route)
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.icon_lock),
-                            contentDescription = "Pin Spell Card",
-                            tint = DarkBlueColorTheme.screenInactiveColor,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            val selectedList = getListBySelectedLanguage(selectedLanguage)
-                            val updatedFavorites = selectedList.toMutableList()
-                            updatedFavorites.remove(spellDetail)
-                            setListBySelectedLanguage(selectedLanguage, updatedFavorites)
-                            saveFavoritesToPrefs(context)
-                        }
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.icon_delete),
-                            contentDescription = "Remove from favorites",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-                SpellCardScreen(spellDetail = spellDetail)
+                SpellCardScreen(
+                    selectedLanguage = selectedLanguage,
+                    navController = navController,
+                    spellDetail = spellDetail,
+                    isPinnedAndIsFavoriteScreen = Pair(false, true)
+                )
                 Divider(modifier = Modifier.height(6.dp)
                 )
             }
         }
     }
 }
+
+//    val context = LocalContext.current
+//    loadFavoritesFromPrefs(context)

@@ -35,7 +35,7 @@
 
     <!--Home Screen-->
     <string name="successfully_added">Успешно добавлено</string>
-    <string name="already_added_this_spell">Вы уже добавили это заклинание в избранное</string>
+    <string name="successfully_deleted">Успешно удалёно из избранного</string>
 
     <!--  Loading Screen  -->
     <string name="please_wait">Пожалуйста, подождите…</string>
@@ -63,4 +63,11 @@
     <string name="language">Язык</string>
     <string name="english">English</string>
     <string name="russian">Русский</string>
+
+
+    <!--  MenuActions  -->
+    <string name="pin_card">Закрепить карточку</string>
+    <string name="add_to_favorites">Добавить в избранное</string>
+    <string name="delete_from_favorites">Удалить из избранного</string>
+    <string name="unpin_card">Открепить карточку</string>
 </resources>

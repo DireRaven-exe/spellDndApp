@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
@@ -33,7 +32,7 @@ import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
 fun TextFieldBox(filterText: MutableState<String>) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
-    val textFieldValue = remember { mutableStateOf(TextFieldValue(filterText.value)) }
+    val textFieldValue = remember { mutableStateOf("") }
     val isKeyboardVisible = remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
@@ -47,7 +46,7 @@ fun TextFieldBox(filterText: MutableState<String>) {
                 value = textFieldValue.value,
                 onValueChange = { newValue ->
                     textFieldValue.value = newValue
-                    filterText.value = newValue.text
+                    filterText.value = newValue
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -92,7 +91,7 @@ fun TextFieldBox(filterText: MutableState<String>) {
             TextButton( //Кнопка отмены
                 onClick = {
                     filterText.value = ""
-                    textFieldValue.value = TextFieldValue("")
+                    textFieldValue.value = ""
                     keyboardController?.hide()
                     isKeyboardVisible.value = false
                     focusManager.clearFocus()

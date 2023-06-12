@@ -24,6 +24,7 @@ import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -91,7 +92,7 @@ fun LanguageSelectionCard(
                 .drawWithContent {
                     drawContent()
                     drawLine(
-                        color = DarkBlueColorTheme.screenInactiveColor,
+                        color = DarkBlueColorTheme.lineColor,
                         strokeWidth = 1.dp.toPx(),
                         start = Offset(48.dp.toPx(), size.height),
                         end = Offset(size.width, size.height)
@@ -133,60 +134,55 @@ fun LanguageSelectionCard(
     }
 
     if (expanded) {
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = mainBackgroundColor).shadow(12.dp)
+        MaterialTheme(
+            colors = MaterialTheme.colors.copy(surface = dropdownMenuBackgroundColor),
+            shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16))
         ) {
-                Column(
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.width(300.dp)
+                    //.background(color = mainBackgroundColor).shadow(12.dp)
+            ) {
+                DropdownMenuItem(
+                    onClick = {
+                        selectedLanguage.value = "en"
+                        saveLanguageToSharedPreferences(sharedPreferences, "en")
+                        expanded = false
+                    },
+                    //РИСУЕМ ЛИНИЮ ПОСЛЕ ЭЛЕМЕНТА
                     modifier = Modifier
-                        .fillMaxWidth().fillMaxHeight()
-                        .background(color = bottomBarBackgroundColor,
-                            shape = RoundedCornerShape(16.dp)
-                        ),
+                        //.fillMaxWidth()
+                        .drawWithContent {
+                            drawContent()
+                            drawLine(
+                                color = DarkBlueColorTheme.lineColor,
+                                strokeWidth = 1.dp.toPx(),
+                                start = Offset(0.dp.toPx(), size.height),
+                                end = Offset(size.width - 0.dp.toPx(), size.height)
+                            )
+                        },
                 ) {
-
-                    DropdownMenuItem(
-                        onClick = {
-                            selectedLanguage.value = "en"
-                            saveLanguageToSharedPreferences(sharedPreferences, "en")
-                            expanded = false
-                        },
-                        //РИСУЕМ ЛИНИЮ ПОСЛЕ ЭЛЕМЕНТА
-                        modifier = Modifier
-                            //.fillMaxWidth()
-                            .drawWithContent {
-                                drawContent()
-                                drawLine(
-                                    color = DarkBlueColorTheme.screenInactiveColor,
-                                    strokeWidth = 1.dp.toPx(),
-                                    start = Offset(48.dp.toPx(), size.height),
-                                    end = Offset(size.width - 48.dp.toPx(), size.height)
-                                )
-                            },
-                    ) {
-                        Text(
-                            text = stringResource(R.string.english),
-                            color = DarkBlueColorTheme.textColor
-                        )
-                    }
-                    DropdownMenuItem(
-                        onClick = {
-                            selectedLanguage.value = "ru"
-                            saveLanguageToSharedPreferences(sharedPreferences, "ru")
-                            expanded = false
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                    ) {
-                        Text(
-                            text = stringResource(R.string.russian),
-                            color = DarkBlueColorTheme.textColor
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.english),
+                        color = DarkBlueColorTheme.textColor
+                    )
                 }
+                DropdownMenuItem(
+                    onClick = {
+                        selectedLanguage.value = "ru"
+                        saveLanguageToSharedPreferences(sharedPreferences, "ru")
+                        expanded = false
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(R.string.russian),
+                        color = DarkBlueColorTheme.textColor
+                    )
+                }
+            }
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.spellsdnd.navigation.spell.card
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,8 +41,9 @@ import com.example.spellsdnd.utils.applySchoolStyle
  * Метод, отображающий информацию об отдельном заклинании
  * @param spellDetail - информация о заклинании
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun InfoCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
+fun InfoCardSide(spellDetail: SpellDetail, onClick: () -> Unit, onLongClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(
@@ -51,7 +54,10 @@ fun InfoCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
             )
             .aspectRatio(0.65f)
             .wrapContentHeight()
-            .clickable { onClick.invoke() },
+            .combinedClickable (
+                onClick = { onClick.invoke() },
+                onLongClick = { onLongClick.invoke() }
+            ),
             elevation = 4.dp,
             shape = RoundedCornerShape(8.dp)
     ) {

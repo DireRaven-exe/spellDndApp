@@ -26,10 +26,10 @@ package com.example.spellsdnd.data
  * @param document__license_url - ссылка на документ с лицензией
  */
 data class SpellDetail(
-    var slug: String, // id spell
-    var name: String, // name spell
-    var desc: String, // description spell
-    var higher_level: String, // it's desc spell if you use her on higher level
+    var slug: String,
+    var name: String,
+    var desc: String,
+    var higher_level: String,
     var page: String,
     var range: String,
     var components: String,

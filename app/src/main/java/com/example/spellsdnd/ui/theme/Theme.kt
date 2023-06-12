@@ -64,6 +64,7 @@ object DarkBlueColorTheme {
     // NAVIGATION BOTTOM COLORS
     val screenActiveColor = Color(0xFF5EB4F6) // Цвет иконки, когда находимся на соответствующем экране
     val screenInactiveColor = Color(0xFF7993AA) // Цвет иконки для остальных экранов
+    val lineColor = Color(0xFF485866) // Цвет иконки для остальных экранов
 
 }
 

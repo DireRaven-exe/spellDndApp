@@ -18,8 +18,6 @@ object Utils {
         Font(R.font.imfellenglish_regular, FontWeight.Normal, FontStyle.Italic)
     )
 
-    val isVisibleSpell = mutableStateOf(false)
-
     val dndClassMap = mapOf(
         "Бард" to DndClass.BARD,
         "Bard" to DndClass.BARD,
