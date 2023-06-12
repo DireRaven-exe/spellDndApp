@@ -1,10 +1,11 @@
 package com.example.spellsdnd.navigation.spell.card
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,9 +21,14 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -36,19 +42,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.data.SpellDetail
+import com.example.spellsdnd.navigation.navItem.bar.Screens
+import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
 import com.example.spellsdnd.utils.DndClass
 import com.example.spellsdnd.utils.Utils
 import com.example.spellsdnd.utils.Utils.dndClassMap
-import com.example.spellsdnd.utils.getIconResId
 import com.example.spellsdnd.utils.applySchoolStyle
+import com.example.spellsdnd.utils.getIconResId
 import com.example.spellsdnd.utils.isLongText
 
 /**
  * Метод, отображающий основной экран со списком карточек заклинаний
  * @param spellDetail - информация о заклинании
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
+fun MainCardSide(spellDetail: SpellDetail, onClick: () -> Unit, onLongClick: () -> Unit) {
+    val showMenu = remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -60,12 +70,43 @@ fun MainCardSide(spellDetail: SpellDetail, onClick: () -> Unit) {
             )
             .aspectRatio(0.65f)
             .wrapContentHeight()
-            .clickable { onClick.invoke() },
+            .combinedClickable (
+                onClick = { onClick.invoke() },
+                onLongClick = { onLongClick.invoke() }
+            ),
             elevation = 4.dp,
             shape = RoundedCornerShape(8.dp),
     ) {
         DrawCardComponents(spellDetail = spellDetail)
     }
+//    if (showMenu.value) {
+//        DropdownMenu(
+//            expanded = true,
+//            onDismissRequest = { showMenu.value = false }
+//        ) {
+//            DropdownMenuItem(onClick = {
+//                // Handle "Закрепить" item click
+//                showMenu.value = false // Hide the menu after selecting an item
+//                Utils.isVisibleSpell.value = true
+//                navController.navigate(Screens.Spell(spellDetail.slug).route)
+//            }
+//            ) {
+//                Icon(
+//                    painter = painterResource(R.drawable.icon_lock),
+//                    contentDescription = "Pin Spell Card",
+//                    tint = DarkBlueColorTheme.screenInactiveColor,
+//                    modifier = Modifier.size(24.dp)
+//                )
+//                Text("Закрепить")
+//            }
+//            DropdownMenuItem(onClick = {
+//                // Handle "Добавить в избранное" item click
+//                showMenu.value = false // Hide the menu after selecting an item
+//            }) {
+//                Text("Добавить в избранное")
+//            }
+//        }
+//    }
 }
 
 /**
