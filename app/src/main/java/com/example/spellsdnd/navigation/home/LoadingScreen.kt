@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
+import com.example.spellsdnd.ui.theme.SpellDndTheme
 import com.example.spellsdnd.utils.Utils
 
 /**
@@ -46,24 +48,25 @@ fun LoadingScreen(isLoading: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBlueColorTheme.mainBackgroundColor),
+            .background(SpellDndTheme.colors.primaryBackground),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
+        Icon(
             painter = painterResource(id = R.drawable.icon_wait),
             contentDescription = null,
             modifier = Modifier
                 .size(64.dp)
                 .rotate(rotation.value),
-            contentScale = ContentScale.Fit
+            tint = SpellDndTheme.colors.primaryIcon
         )
         Text(
             text = stringResource(R.string.please_wait),
-            modifier = Modifier.padding(top = 30.dp)
+            modifier = Modifier
+                .padding(top = 30.dp)
                 .wrapContentSize(Alignment.Center),
             style = MaterialTheme.typography.h6,
-            color = DarkBlueColorTheme.textColor,
+            color = SpellDndTheme.colors.primaryText,
             fontFamily = Utils.customFont_im_fell_english_regular
         )
     }

@@ -1,17 +1,13 @@
 package com.example.spellsdnd.navigation.settings
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,16 +16,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,48 +33,70 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.bottomBarBackgroundColor
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.dropdownMenuBackgroundColor
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.mainBackgroundColor
+import com.example.spellsdnd.ui.theme.SpellDndStyle
+import com.example.spellsdnd.ui.theme.SpellDndTheme
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun SettingsScreen(
-    selectedLanguage: MutableState<String>,
-    sharedPreferences: SharedPreferences,
-) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(mainBackgroundColor)
+fun SettingsScreen(settingsApp: Settings, sharedPreferences: SharedPreferences) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(
+                    text = stringResource(id = R.string.settings),
+                    color = SpellDndTheme.colors.primaryText,
+                    fontWeight = SpellDndTheme.typography.heading.fontWeight,
+                ) },
+                backgroundColor = SpellDndTheme.colors.secondaryBackground,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        backgroundColor = SpellDndTheme.colors.primaryBackground
     ) {
-        item {
-            Card(
+        Card(
+            modifier = Modifier
+                .background(SpellDndTheme.colors.primaryBackground)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth().padding(top = 10.dp),
-                shape = RoundedCornerShape(12.dp)
+                    .background(SpellDndTheme.colors.secondaryBackground)
             ) {
-                LanguageSelectionCard(
-                    selectedLanguage = selectedLanguage,
-                    sharedPreferences = sharedPreferences,
-                )
+                item {
+                    LanguageSelectionBox(
+                        settingsApp = settingsApp,
+                        sharedPreferences = sharedPreferences
+                    )
+                }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .padding(start = 48.dp)
+                    ) {
+                        Divider(color = SpellDndTheme.colors.tintColor)
+                    }
+                }
+                item {
+                    ThemeSelectionBox(
+                        selectedTheme = settingsApp.selectedStyle,
+                        sharedPreferences = sharedPreferences
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun LanguageSelectionCard(
-    selectedLanguage: MutableState<String>,
+fun LanguageSelectionBox(
+    settingsApp: Settings,
     sharedPreferences: SharedPreferences,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -88,23 +106,15 @@ fun LanguageSelectionCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(bottomBarBackgroundColor)
-                .drawWithContent {
-                    drawContent()
-                    drawLine(
-                        color = DarkBlueColorTheme.lineColor,
-                        strokeWidth = 1.dp.toPx(),
-                        start = Offset(48.dp.toPx(), size.height),
-                        end = Offset(size.width, size.height)
-                    )
-                }
+                .background(SpellDndTheme.colors.secondaryBackground)
         ) {
-            Image(
+            Icon(
                 painter = painterResource(R.drawable.icon_settings_language),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(start = 10.dp)
-                    .size(32.dp)
+                    .size(32.dp),
+                tint = SpellDndTheme.colors.primaryIcon
             )
 
             Text(
@@ -112,7 +122,9 @@ fun LanguageSelectionCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 10.dp),
-                color = DarkBlueColorTheme.textColor
+                color = SpellDndTheme.colors.primaryText,
+                fontSize = SpellDndTheme.typography.body.fontSize,
+                fontWeight = SpellDndTheme.typography.body.fontWeight
             )
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -121,12 +133,12 @@ fun LanguageSelectionCard(
                 modifier = Modifier.padding(start = 4.dp)
             ) {
                 Text(
-                    text = when (selectedLanguage.value) {
+                    text = when (settingsApp.selectedLanguage.value) {
                         "en" -> stringResource(R.string.english)
                         "ru" -> stringResource(R.string.russian)
                         else -> ""
                     },
-                    color = DarkBlueColorTheme.screenActiveColor,
+                    color = SpellDndTheme.colors.primaryButtonTextColor,
                     modifier = Modifier.padding(end = 5.dp)
                 )
             }
@@ -135,42 +147,41 @@ fun LanguageSelectionCard(
 
     if (expanded) {
         MaterialTheme(
-            colors = MaterialTheme.colors.copy(surface = dropdownMenuBackgroundColor),
-            shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16))
+            colors = MaterialTheme.colors.copy(surface = SpellDndTheme.colors.secondaryBackground),
+            shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(12))
         ) {
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier.width(300.dp)
-                    //.background(color = mainBackgroundColor).shadow(12.dp)
             ) {
                 DropdownMenuItem(
                     onClick = {
-                        selectedLanguage.value = "en"
+                        settingsApp.selectedLanguage.value = "en"
                         saveLanguageToSharedPreferences(sharedPreferences, "en")
                         expanded = false
                     },
-                    //РИСУЕМ ЛИНИЮ ПОСЛЕ ЭЛЕМЕНТА
                     modifier = Modifier
-                        //.fillMaxWidth()
-                        .drawWithContent {
-                            drawContent()
-                            drawLine(
-                                color = DarkBlueColorTheme.lineColor,
-                                strokeWidth = 1.dp.toPx(),
-                                start = Offset(0.dp.toPx(), size.height),
-                                end = Offset(size.width - 0.dp.toPx(), size.height)
-                            )
-                        },
+                        .fillMaxWidth()
                 ) {
                     Text(
                         text = stringResource(R.string.english),
-                        color = DarkBlueColorTheme.textColor
+                        color = SpellDndTheme.colors.primaryText
                     )
                 }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .padding(start = 0.dp)
+                ) {
+                    Divider(color = SpellDndTheme.colors.tintColor)
+                }
+
                 DropdownMenuItem(
                     onClick = {
-                        selectedLanguage.value = "ru"
+                        settingsApp.selectedLanguage.value = "ru"
                         saveLanguageToSharedPreferences(sharedPreferences, "ru")
                         expanded = false
                     },
@@ -179,12 +190,126 @@ fun LanguageSelectionCard(
                 ) {
                     Text(
                         text = stringResource(R.string.russian),
-                        color = DarkBlueColorTheme.textColor
+                        color = SpellDndTheme.colors.primaryText
                     )
                 }
             }
         }
     }
 }
+@Composable
+fun ThemeSelectionBox(
+    selectedTheme: MutableState<SpellDndStyle>,
+    sharedPreferences: SharedPreferences,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = Modifier.clickable { expanded = true }) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(SpellDndTheme.colors.secondaryBackground)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.icon_settings_theme),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .size(32.dp),
+                tint = SpellDndTheme.colors.primaryIcon
+            )
+
+            Text(
+                text = stringResource(R.string.theme),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 10.dp),
+                color = SpellDndTheme.colors.primaryText,
+                fontSize = SpellDndTheme.typography.body.fontSize,
+                fontWeight = SpellDndTheme.typography.body.fontWeight
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+
+            TextButton(
+                onClick = { expanded = !expanded },
+                modifier = Modifier.padding(start = 4.dp)
+            ) {
+                Text(
+                    text = when (selectedTheme.value) {
+                        SpellDndStyle.DarkBlue -> stringResource(R.string.dark_blue)
+                        SpellDndStyle.Light -> stringResource(R.string.light)
+                        SpellDndStyle.Dark -> stringResource(id = R.string.dark)
+                    },
+                    color = SpellDndTheme.colors.primaryButtonTextColor,
+                    modifier = Modifier.padding(end = 5.dp)
+                )
+            }
+        }
+    }
+    if (expanded) {
+        MaterialTheme(
+            colors = MaterialTheme.colors.copy(surface = SpellDndTheme.colors.secondaryBackground),
+            shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(12))
+        ) {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.width(300.dp)
+            ) {
+                DropdownMenuItem(
+                    onClick = {
+                        selectedTheme.value = SpellDndStyle.DarkBlue
+                        saveThemeToSharedPreferences(sharedPreferences, selectedTheme.value)
+                        expanded = false
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.dark_blue),
+                        color = SpellDndTheme.colors.primaryText
+                    )
+                }
+
+                Divider(color = SpellDndTheme.colors.tintColor)
+
+                DropdownMenuItem(
+                    onClick = {
+                        selectedTheme.value = SpellDndStyle.Dark
+                        saveThemeToSharedPreferences(sharedPreferences, selectedTheme.value)
+                        expanded = false
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.dark),
+                        color = SpellDndTheme.colors.primaryText
+                    )
+                }
+
+                Divider(color = SpellDndTheme.colors.tintColor)
+
+                DropdownMenuItem(
+                    onClick = {
+                        selectedTheme.value = SpellDndStyle.Light
+                        saveThemeToSharedPreferences(sharedPreferences, selectedTheme.value)
+                        expanded = false
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(R.string.light),
+                        color = SpellDndTheme.colors.primaryText
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+
 
 

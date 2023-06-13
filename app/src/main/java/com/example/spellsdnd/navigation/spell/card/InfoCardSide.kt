@@ -46,14 +46,12 @@ import com.example.spellsdnd.utils.applySchoolStyle
 fun InfoCardSide(spellDetail: SpellDetail, onClick: () -> Unit, onLongClick: () -> Unit) {
     Card(
         modifier = Modifier
+            .fillMaxSize()
             .padding(
-                top = 0.dp,
                 start = 10.dp,
-                end = 10.dp,
-                bottom = 30.dp
+                end = 10.dp
             )
             .aspectRatio(0.65f)
-            .wrapContentHeight()
             .combinedClickable (
                 onClick = { onClick.invoke() },
                 onLongClick = { onLongClick.invoke() }
@@ -175,7 +173,8 @@ fun ShowParameter(iconParameter: Int, nameParameter: String, textParameter: Stri
             contentDescription = null,
             modifier = Modifier
                 .scale(1f) // Увеличиваем размер изображения
-                .padding(end = 8.dp)
+                .padding(end = 8.dp),
+            tint = Color.Black
         )
         Column() {
             Text(

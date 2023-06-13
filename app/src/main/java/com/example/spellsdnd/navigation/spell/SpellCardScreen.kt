@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -28,9 +30,10 @@ import com.example.spellsdnd.navigation.favorites.Favorites.getListBySelectedLan
 import com.example.spellsdnd.navigation.favorites.Favorites.saveFavoritesToPrefs
 import com.example.spellsdnd.navigation.favorites.Favorites.setListBySelectedLanguage
 import com.example.spellsdnd.navigation.navItem.bar.Screens
+import com.example.spellsdnd.navigation.settings.Settings
 import com.example.spellsdnd.navigation.spell.card.InfoCardSide
 import com.example.spellsdnd.navigation.spell.card.MainCardSide
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
+import com.example.spellsdnd.ui.theme.SpellDndTheme
 
 /**
  * Перечисление, обозначающее сторону карты
@@ -47,7 +50,7 @@ enum class CardState {
  */
 @Composable
 fun SpellCardScreen(
-    selectedLanguage: MutableState<String>,
+    settingsApp: Settings,
     navController: NavController,
     spellDetail: SpellDetail,
     isPinnedAndIsFavoriteScreen: Pair<Boolean, Boolean>
@@ -59,36 +62,40 @@ fun SpellCardScreen(
         showMenu,
         navController,
         spellDetail,
-        selectedLanguage,
+        settingsApp,
         isPinnedAndIsFavoriteScreen
     )
-
-    Column(
-        modifier = Modifier
-            .background(DarkBlueColorTheme.mainBackgroundColor)
-            .padding(
-                top = 0.dp,
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 16.dp
+    Column(modifier = Modifier.background(SpellDndTheme.colors.primaryBackground)) {
+        if (isPinnedAndIsFavoriteScreen.first) {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.screen_pin_card),
+                        color = SpellDndTheme.colors.primaryText,
+                        fontWeight = SpellDndTheme.typography.heading.fontWeight
+                    )
+                },
+                backgroundColor = SpellDndTheme.colors.secondaryBackground
             )
-    ) {
-        FavoriteIconStateBox(selectedLanguage, spellDetail)
-        when (cardState.value) {
-            CardState.Front -> {
-                MainCardSide(
-                    spellDetail = spellDetail,
-                    onClick = { cardState.value = CardState.Back },
-                    onLongClick = { showMenu.value = true }
-                )
-            }
+        }
 
-            CardState.Back -> {
-                InfoCardSide(
-                    spellDetail = spellDetail,
-                    onClick = { cardState.value = CardState.Front },
-                    onLongClick = { showMenu.value = true }
-                )
+        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
+            FavoriteIconStateBox(settingsApp, spellDetail)
+            when (cardState.value) {
+                CardState.Front -> {
+                    MainCardSide(
+                        spellDetail = spellDetail,
+                        onClick = { cardState.value = CardState.Back },
+                        onLongClick = { showMenu.value = true }
+                    )
+                }
+                CardState.Back -> {
+                    InfoCardSide(
+                        spellDetail = spellDetail,
+                        onClick = { cardState.value = CardState.Front },
+                        onLongClick = { showMenu.value = true }
+                    )
+                }
             }
         }
     }
@@ -99,7 +106,7 @@ fun SpellCardScreen(
  */
 @Composable
 private fun FavoriteIconStateBox(
-    selectedLanguage: MutableState<String>,
+    settingsApp: Settings,
     spellDetail: SpellDetail,
 ) {
     Row(
@@ -109,11 +116,11 @@ private fun FavoriteIconStateBox(
         Spacer(modifier = Modifier.weight(1f))
         Icon(
             painter = painterResource(
-                if (getListBySelectedLanguage(selectedLanguage).contains(spellDetail)) {
+                if (getListBySelectedLanguage(settingsApp.selectedLanguage).contains(spellDetail)) {
                         R.drawable.icon_favorites_added
                 } else { R.drawable.icon_favorites_not_added } ),
             contentDescription = "Add to favorites",
-            tint = DarkBlueColorTheme.textColor,
+            tint = SpellDndTheme.colors.primaryIcon,
             modifier = Modifier.size(24.dp),
         )
     }
@@ -127,7 +134,7 @@ private fun MenuActionsContainer(
     showMenu: MutableState<Boolean>,
     navController: NavController,
     spellDetail: SpellDetail,
-    selectedLanguage: MutableState<String>,
+    settingsApp: Settings,
     isPinnedAndIsFavoriteScreen: Pair<Boolean, Boolean>
 ) {
     val context = LocalContext.current
@@ -168,7 +175,6 @@ private fun MenuActionsContainer(
                     icon = R.drawable.icon_pin,
                     action = {
                         if (!isPinnedAndIsFavoriteScreen.second) {
-                            //Screens.Spell(spellDetail.slug)
                             navController.navigate(Screens.Spell.enterSlug(spellDetail.slug)) {
                                 navController.graph.startDestinationRoute?.let { route ->
                                     popUpTo(route) {
@@ -188,9 +194,7 @@ private fun MenuActionsContainer(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                            //Screens.FavoriteSpell(spellDetail.slug)
                         }
-                        //navController.navigate(Screens.Spell(spellDetail.slug).route)
                     }
                 )
             )
@@ -198,22 +202,22 @@ private fun MenuActionsContainer(
 
         menuActionsItems.add(
             MenuActionsItem(
-                title = if (getListBySelectedLanguage(selectedLanguage).contains(spellDetail)) {
+                title = if (getListBySelectedLanguage(settingsApp.selectedLanguage).contains(spellDetail)) {
                     stringResource(id = R.string.delete_from_favorites)
                 } else {
                     stringResource(id = R.string.add_to_favorites)
                 },
-                icon = if (getListBySelectedLanguage(selectedLanguage).contains(spellDetail)) {
+                icon = if (getListBySelectedLanguage(settingsApp.selectedLanguage).contains(spellDetail)) {
                     R.drawable.icon_favorites_added
                 } else {
                     R.drawable.icon_favorites_not_added
                 },
                 action = {
-                    if (getListBySelectedLanguage(selectedLanguage).contains(spellDetail)) {
-                        val selectedList = getListBySelectedLanguage(selectedLanguage)
+                    if (getListBySelectedLanguage(settingsApp.selectedLanguage).contains(spellDetail)) {
+                        val selectedList = getListBySelectedLanguage(settingsApp.selectedLanguage)
                         val updatedFavorites = selectedList.toMutableList()
                         updatedFavorites.remove(spellDetail)
-                        setListBySelectedLanguage(selectedLanguage, updatedFavorites)
+                        setListBySelectedLanguage(settingsApp.selectedLanguage, updatedFavorites)
                         saveFavoritesToPrefs(context)
                         Toast.makeText(
                             context,
@@ -221,10 +225,10 @@ private fun MenuActionsContainer(
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
-                        val selectedList = getListBySelectedLanguage(selectedLanguage)
+                        val selectedList = getListBySelectedLanguage(settingsApp.selectedLanguage)
                         val updatedFavorites = selectedList.toMutableList()
                         updatedFavorites.add(spellDetail)
-                        setListBySelectedLanguage(selectedLanguage, updatedFavorites)
+                        setListBySelectedLanguage(settingsApp.selectedLanguage, updatedFavorites)
                         saveFavoritesToPrefs(context)
                         Toast.makeText(
                             context,
