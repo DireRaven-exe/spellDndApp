@@ -50,9 +50,12 @@ fun SettingsScreen(settingsApp: Settings, sharedPreferences: SharedPreferences) 
                     text = stringResource(id = R.string.settings),
                     color = SpellDndTheme.colors.primaryText,
                     fontWeight = SpellDndTheme.typography.heading.fontWeight,
-                ) },
-                backgroundColor = SpellDndTheme.colors.secondaryBackground,
-                modifier = Modifier.fillMaxWidth()
+                    fontSize = SpellDndTheme.typography.heading.fontSize
+                )
+                },
+                backgroundColor = SpellDndTheme.colors.primaryBackground,
+                modifier = Modifier.fillMaxWidth(),
+                elevation = 0.dp
             )
         },
         backgroundColor = SpellDndTheme.colors.primaryBackground
@@ -61,7 +64,7 @@ fun SettingsScreen(settingsApp: Settings, sharedPreferences: SharedPreferences) 
             modifier = Modifier
                 .background(SpellDndTheme.colors.primaryBackground)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
         ) {
             LazyColumn(
                 modifier = Modifier

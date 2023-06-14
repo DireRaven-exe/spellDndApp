@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,9 +45,6 @@ import com.example.spellsdnd.navigation.settings.getSelectedTheme
 import com.example.spellsdnd.navigation.spell.SpellCardScreen
 import com.example.spellsdnd.retrofit.SpellRusManager.getAllEnSpells
 import com.example.spellsdnd.retrofit.SpellRusManager.getAllRusSpells
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.screenActiveColor
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.screenInactiveColor
 import com.example.spellsdnd.ui.theme.SpellDndSize
 import com.example.spellsdnd.ui.theme.SpellDndTheme
 import com.example.spellsdnd.utils.MutableListManager.originalSpellsList
@@ -91,9 +87,8 @@ class MainActivity : ComponentActivity() {
                 //НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ
                 val navController = rememberNavController()
                 val navItems = listOf(
-                    NavItem(stringResource(id = R.string.filters), R.drawable.icon_filter, Screens.Filters),
-                    NavItem(stringResource(id = R.string.home), R.drawable.icon_home, Screens.Home),
                     NavItem(stringResource(id = R.string.favorites), R.drawable.icon_favorites_not_added, Screens.Favorites),
+                    NavItem(stringResource(id = R.string.home), R.drawable.icon_home, Screens.Home),
                     NavItem(stringResource(id = R.string.settings), R.drawable.icon_settings, Screens.Settings),
                 )
                 var currentScreen by remember { mutableStateOf<Screens>(Screens.Home) }
@@ -140,9 +135,6 @@ class MainActivity : ComponentActivity() {
                             startDestination = Screens.Home.route,
                             modifier = Modifier.padding(innerPadding)
                         ) {
-                            composable(Screens.Filters.route) {
-                                FiltersScreen(navController, settingsApp, onApplyFilter = { _ -> })
-                            }
                             composable(Screens.Home.route) {
                                 HomeScreen(navController, settingsApp)
                             }

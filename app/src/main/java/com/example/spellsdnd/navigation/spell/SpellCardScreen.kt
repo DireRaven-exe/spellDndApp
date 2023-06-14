@@ -72,15 +72,29 @@ fun SpellCardScreen(
                     Text(
                         text = stringResource(id = R.string.screen_pin_card),
                         color = SpellDndTheme.colors.primaryText,
-                        fontWeight = SpellDndTheme.typography.heading.fontWeight
+                        fontWeight = SpellDndTheme.typography.heading.fontWeight,
+                        fontSize = SpellDndTheme.typography.heading.fontSize
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        painter = painterResource(
+                            if (getListBySelectedLanguage(settingsApp.selectedLanguage).contains(spellDetail)) {
+                                R.drawable.icon_favorites_added
+                            } else { R.drawable.icon_favorites_not_added } ),
+                        contentDescription = "Add to favorites",
+                        tint = SpellDndTheme.colors.primaryIcon,
+                        modifier = Modifier.size(24.dp).padding(end = 0.dp),
                     )
                 },
-                backgroundColor = SpellDndTheme.colors.secondaryBackground
+                backgroundColor = SpellDndTheme.colors.primaryBackground,
+                elevation = 0.dp
             )
         }
 
         Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-            FavoriteIconStateBox(settingsApp, spellDetail)
+            if (!isPinnedAndIsFavoriteScreen.first) {
+                FavoriteIconStateBox(settingsApp, spellDetail)
+            }
             when (cardState.value) {
                 CardState.Front -> {
                     MainCardSide(
@@ -89,6 +103,7 @@ fun SpellCardScreen(
                         onLongClick = { showMenu.value = true }
                     )
                 }
+
                 CardState.Back -> {
                     InfoCardSide(
                         spellDetail = spellDetail,

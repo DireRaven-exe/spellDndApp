@@ -1,31 +1,49 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.example.spellsdnd.navigation.filter
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.spellsdnd.R
 import com.example.spellsdnd.data.SpellDetail
 import com.example.spellsdnd.navigation.filter.DataForFilter.spellLevels
-import com.example.spellsdnd.navigation.navItem.bar.Screens
 import com.example.spellsdnd.navigation.settings.Settings
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
 import com.example.spellsdnd.ui.theme.SpellDndTheme
 import com.example.spellsdnd.utils.MutableListManager.originalSpellsList
 import com.example.spellsdnd.utils.MutableListManager.spellsList
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("MutableCollectionMutableState", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun FiltersScreen(navController: NavController, settingsApp: Settings, onApplyFilter: (List<SpellDetail>) -> Unit ) {
+fun FiltersScreen(
+    settingsApp: Settings,
+    onApplyFilter: (List<SpellDetail>) -> Unit,
+    sheetState: ModalBottomSheetState
+) {
 
     val selectedSchools = remember { mutableSetOf<String>() }
     val selectedClasses = remember { mutableSetOf<String>() }
@@ -47,10 +65,12 @@ fun FiltersScreen(navController: NavController, settingsApp: Settings, onApplyFi
                         text = stringResource(id = R.string.filters),
                         color = SpellDndTheme.colors.primaryText,
                         fontWeight = SpellDndTheme.typography.heading.fontWeight,
+                        fontSize = SpellDndTheme.typography.heading.fontSize
                     )
                 },
-                backgroundColor = SpellDndTheme.colors.secondaryBackground,
-                modifier = Modifier.fillMaxWidth()
+                backgroundColor = SpellDndTheme.colors.primaryBackground,
+                modifier = Modifier.fillMaxWidth(),
+                elevation = 0.dp, // Установка нулевой высоты тени
             )
         },
         backgroundColor = SpellDndTheme.colors.primaryBackground
@@ -66,41 +86,45 @@ fun FiltersScreen(navController: NavController, settingsApp: Settings, onApplyFi
                     .background(SpellDndTheme.colors.secondaryBackground)
             ) {
                 item {
-                    Column {
-                        FilterPanel(
-                            label = stringResource(id = R.string.level),
-                            items = spellLevels,
-                            selectedItems = selectedLevels.map { it.toString() }.toMutableSet(),
-                            onFilterChange = { selectedItems ->
-                                selectedLevels.clear()
-                                selectedLevels.addAll(selectedItems.mapNotNull { it.toIntOrNull() })
-                            }
-                        )
+                    FilterPanel(
+                        label = stringResource(id = R.string.level),
+                        items = spellLevels,
+                        selectedItems = selectedLevels.map { it.toString() }.toMutableSet(),
+                        onFilterChange = { selectedItems ->
+                            selectedLevels.clear()
+                            selectedLevels.addAll(selectedItems.mapNotNull { it.toIntOrNull() })
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
 
-                        Spacer(modifier = Modifier.height(10.dp))
 
-                        FilterPanel(
-                            label = stringResource(id = R.string.school),
-                            items = DataForFilter.getListSchoolsBySelectedLanguage(settingsApp.selectedLanguage),
-                            selectedItems = selectedSchools,
-                            onFilterChange = { schools ->
-                                selectedSchools.clear()
-                                selectedSchools.addAll(schools)
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
 
-                        FilterPanel(
-                            label = stringResource(id = R.string.dnd_class),
-                            items = DataForFilter.getListClassesBySelectedLanguage(settingsApp.selectedLanguage),
-                            selectedItems = selectedClasses,
-                            onFilterChange = { classes ->
-                                selectedClasses.clear()
-                                selectedClasses.addAll(classes)
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
+
+                }
+                item {
+                    FilterPanel(
+                        label = stringResource(id = R.string.school),
+                        items = DataForFilter.getListSchoolsBySelectedLanguage(settingsApp.selectedLanguage),
+                        selectedItems = selectedSchools,
+                        onFilterChange = { schools ->
+                            selectedSchools.clear()
+                            selectedSchools.addAll(schools)
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                }
+
+                item {
+                    FilterPanel(
+                        label = stringResource(id = R.string.dnd_class),
+                        items = DataForFilter.getListClassesBySelectedLanguage(settingsApp.selectedLanguage),
+                        selectedItems = selectedClasses,
+                        onFilterChange = { classes ->
+                            selectedClasses.clear()
+                            selectedClasses.addAll(classes)
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
                 }
 
                 item {
@@ -109,7 +133,7 @@ fun FiltersScreen(navController: NavController, settingsApp: Settings, onApplyFi
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         ApplyFiltersButton(
-                            navController,
+                            sheetState,
                             selectedSchools,
                             selectedClasses,
                             selectedLevels,
@@ -155,12 +179,13 @@ private fun CancelFiltersButton() {
  */
 @Composable
 private fun ApplyFiltersButton(
-    navController: NavController,
+    sheetState: ModalBottomSheetState,
     selectedSchools: MutableSet<String>,
     selectedClasses: MutableSet<String>,
     selectedLevels: MutableSet<Int>,
     onApplyFilter: (List<SpellDetail>) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
     TextButton(
         // Кнопка применения фильтров
         onClick = {
@@ -169,14 +194,9 @@ private fun ApplyFiltersButton(
                 !changeListByFilters(selectedSchools, selectedClasses, selectedLevels).contains(spell)
             }
             onApplyFilter(spellsList) // Вызов обработчика применения фильтров
-            navController.navigate(Screens.Home.route) {
-                navController.graph.startDestinationRoute?.let { route ->
-                    popUpTo(route) {
-                        saveState = false
-                    }
-                }
-                launchSingleTop = true
-                restoreState = true
+
+            coroutineScope.launch {
+                sheetState.hide()
             }
         },
         modifier = Modifier.padding(top = 16.dp),

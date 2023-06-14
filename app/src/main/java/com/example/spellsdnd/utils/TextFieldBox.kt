@@ -43,7 +43,7 @@ fun TextFieldBox(filterText: MutableState<String>) {
             .height(50.dp)
             .fillMaxWidth()
     ) {
-        Card {
+        Card(elevation = 0.dp) {
             TextField(
                 value = textFieldValue.value,
                 onValueChange = { newValue ->

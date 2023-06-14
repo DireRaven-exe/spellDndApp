@@ -10,10 +10,10 @@ val Teal200 = Color(0xFF03DAC5)
 
 val baseLightPalette = SpellDndColors(
     primaryBackground = Color(0xFFFFFFFF),
-    primaryText = Color(0xFF3D454C),
+    primaryText = Color(0xFF000000),
 
     secondaryBackground = Color(0xFFDFDFDF),
-    secondaryText = Color(0xCC4A5157),
+    secondaryText = Color(0xCC4D5053),
 
     tintColor = Color.Magenta,
 
@@ -21,7 +21,10 @@ val baseLightPalette = SpellDndColors(
     secondaryIcon = Color(0xFF485866),
 
     primaryButtonTextColor = Color(0xFF015492),
-    secondaryButtonTextColor = Color(0xFF354049)
+    secondaryButtonTextColor = Color(0xFF354049),
+
+    buttonBackgroundColor = Color(0xFF111418),
+    buttonColor = Color(0xFFFFFFFF)
 )
 
 val baseDarkPalette = SpellDndColors(
@@ -37,7 +40,10 @@ val baseDarkPalette = SpellDndColors(
     secondaryIcon = Color(0xFF6D6D6D),
 
     primaryButtonTextColor = Color(0xFF5EB4F6),
-    secondaryButtonTextColor = Color(0xFF7993AA)
+    secondaryButtonTextColor = Color(0xFF7993AA),
+
+    buttonBackgroundColor = Color(0xFF03D9C5),
+    buttonColor = Color(0xFF000000)
 )
 
 
@@ -46,7 +52,7 @@ val DarkBluePalette = SpellDndColors(
     primaryText = Color(0xFFFFFFFF),
 
     secondaryBackground = Color(0xFF222644),
-    secondaryText = Color(0xFF6D6C61),
+    secondaryText = Color(0xCC9DA6AD),
 
     tintColor = Color(0xFF5B649E),
 
@@ -54,7 +60,10 @@ val DarkBluePalette = SpellDndColors(
     secondaryIcon = Color(0xFF000000),
 
     primaryButtonTextColor = Color(0xFF5EB4F6),
-    secondaryButtonTextColor = Color(0xFF7993AA)
+    secondaryButtonTextColor = Color(0xFF7993AA),
+
+    buttonBackgroundColor = Color(0xFF03D9C5),
+    buttonColor = Color(0xFF000000)
 )
 
 

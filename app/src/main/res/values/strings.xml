@@ -76,5 +76,6 @@
     <string name="dark">Dark</string>
     <string name="theme">Theme</string>
     <string name="screen_pin_card">Pinned</string>
+    <string name="add_filters">Add filters</string>
 
 </resources>

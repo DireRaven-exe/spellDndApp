@@ -77,4 +77,5 @@
     <string name="dark">Тёмная</string>
     <string name="theme">Тема</string>
     <string name="screen_pin_card">Закреплено</string>
+    <string name="add_filters">Добавить фильтры</string>
 </resources>
