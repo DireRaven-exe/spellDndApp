@@ -22,7 +22,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
+import com.example.spellsdnd.navigation.settings.Settings
 import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
+import com.example.spellsdnd.ui.theme.SpellDndTheme
 
 
 /**
@@ -41,7 +43,7 @@ fun TextFieldBox(filterText: MutableState<String>) {
             .height(50.dp)
             .fillMaxWidth()
     ) {
-        Card {
+        Card(elevation = 0.dp) {
             TextField(
                 value = textFieldValue.value,
                 onValueChange = { newValue ->
@@ -60,16 +62,16 @@ fun TextFieldBox(filterText: MutableState<String>) {
                         isKeyboardVisible.value = it.isFocused
                     },
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = DarkBlueColorTheme.mainBackgroundColor,
-                    textColor = DarkBlueColorTheme.textColor,
-                    cursorColor = DarkBlueColorTheme.textFieldCursorColor,
-                    focusedIndicatorColor = DarkBlueColorTheme.textFieldFocusedIndicatorColor,
-                    unfocusedIndicatorColor = DarkBlueColorTheme.textFieldUnfocusedIndicatorColor
+                    backgroundColor = SpellDndTheme.colors.primaryBackground,
+                    textColor = SpellDndTheme.colors.primaryText,
+                    cursorColor = SpellDndTheme.colors.tintColor,
+                    focusedIndicatorColor = SpellDndTheme.colors.secondaryBackground,
+                    unfocusedIndicatorColor = SpellDndTheme.colors.secondaryBackground
                 ),
                 label = {
                     Text(
                         text = stringResource(R.string.Search_spell),
-                        color = DarkBlueColorTheme.textFieldTitleColor,
+                        color = SpellDndTheme.colors.secondaryText,
                         modifier = Modifier.padding(start = 1.dp)
                     )
                 },
@@ -98,7 +100,7 @@ fun TextFieldBox(filterText: MutableState<String>) {
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.Transparent,
-                    contentColor = DarkBlueColorTheme.textButtonColor,
+                    contentColor = SpellDndTheme.colors.primaryButtonTextColor,
                     disabledContentColor = Color.Gray,
                     disabledBackgroundColor = Color.LightGray,
                 ),

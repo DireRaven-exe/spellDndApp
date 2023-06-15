@@ -1,32 +1,30 @@
 package com.example.spellsdnd
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,40 +38,48 @@ import com.example.spellsdnd.navigation.home.HomeScreen
 import com.example.spellsdnd.navigation.home.LoadingScreen
 import com.example.spellsdnd.navigation.navItem.bar.NavItem
 import com.example.spellsdnd.navigation.navItem.bar.Screens
+import com.example.spellsdnd.navigation.settings.Settings
 import com.example.spellsdnd.navigation.settings.SettingsScreen
 import com.example.spellsdnd.navigation.settings.getSelectedLanguage
-import com.example.spellsdnd.navigation.settings.getSharedPreferences
+import com.example.spellsdnd.navigation.settings.getSelectedTheme
 import com.example.spellsdnd.navigation.spell.SpellCardScreen
 import com.example.spellsdnd.retrofit.SpellRusManager.getAllEnSpells
 import com.example.spellsdnd.retrofit.SpellRusManager.getAllRusSpells
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.screenActiveColor
-import com.example.spellsdnd.ui.theme.DarkBlueColorTheme.screenInactiveColor
-import com.example.spellsdnd.ui.theme.SpellsDnDTheme
+import com.example.spellsdnd.ui.theme.SpellDndSize
+import com.example.spellsdnd.ui.theme.SpellDndTheme
 import com.example.spellsdnd.utils.MutableListManager.originalSpellsList
 import com.example.spellsdnd.utils.MutableListManager.spellsList
 import java.util.Locale
 
+
+
 class MainActivity : ComponentActivity() {
     private val isLoading = mutableStateOf(true) // Флаг состояния загрузки данных
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var settingsApp: Settings
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SpellsDnDTheme {
-                //ЯЗЫК ПРИЛОЖЕНИЯ
-                val context = LocalContext.current
-                val sharedPreferences = remember { getSharedPreferences(context) }
-                val selectedLanguage = remember { mutableStateOf(getSelectedLanguage(sharedPreferences)) }
+            //ПАРАМЕТРЫ
+            val context = LocalContext.current
+            sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+            settingsApp = createSettingsFromSharedPreferences()
 
-                val locale = Locale(selectedLanguage.value)
+            SpellDndTheme(
+                style = settingsApp.selectedStyle.value,
+                textSize = settingsApp.selectedFontSize.value,
+            ) {
+
+                val locale = Locale(settingsApp.selectedLanguage.value)
                 Locale.setDefault(locale)
                 val configuration = Configuration()
                 configuration.setLocale(locale)
                 context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
 
                 // Устанавливаем язык и выполняем запрос после его установки
-                LaunchedEffect(selectedLanguage.value) {
-                    spellListRequest(isLoading, selectedLanguage.value)
+                LaunchedEffect(settingsApp.selectedLanguage.value) {
+                    spellListRequest(isLoading, settingsApp.selectedLanguage.value)
                 }
 
                 Favorites.loadFavoritesFromPrefs(context)
@@ -81,9 +87,8 @@ class MainActivity : ComponentActivity() {
                 //НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ
                 val navController = rememberNavController()
                 val navItems = listOf(
-                    NavItem(stringResource(id = R.string.filters), R.drawable.icon_filter, Screens.Filters),
-                    NavItem(stringResource(id = R.string.home), R.drawable.icon_home, Screens.Home),
                     NavItem(stringResource(id = R.string.favorites), R.drawable.icon_favorites_not_added, Screens.Favorites),
+                    NavItem(stringResource(id = R.string.home), R.drawable.icon_home, Screens.Home),
                     NavItem(stringResource(id = R.string.settings), R.drawable.icon_settings, Screens.Settings),
                 )
                 var currentScreen by remember { mutableStateOf<Screens>(Screens.Home) }
@@ -91,16 +96,17 @@ class MainActivity : ComponentActivity() {
                 if (isLoading.value) { LoadingScreen(isLoading = isLoading.value) }
                 else {
                     Scaffold(
-                        backgroundColor = Color(0xFF151829),
+                        backgroundColor = SpellDndTheme.colors.primaryBackground,
                         bottomBar = {
                             BottomNavigation(
-                                backgroundColor = DarkBlueColorTheme.bottomBarBackgroundColor
+                                backgroundColor = SpellDndTheme.colors.secondaryBackground,
+                                modifier = Modifier.height(50.dp)
                             ) {
                                 navItems.forEach { item ->
                                     val selectedIconColor = if (currentScreen == item.route) {
-                                        screenActiveColor // Цвет иконки, когда находимся на соответствующем экране
+                                        SpellDndTheme.colors.primaryText // Цвет иконки, когда находимся на соответствующем экране
                                     } else {
-                                        screenInactiveColor// Цвет иконки для остальных экранов
+                                        SpellDndTheme.colors.secondaryText// Цвет иконки для остальных экранов
                                     }
                                     BottomNavigationItem(
                                         icon = {
@@ -124,75 +130,88 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     ) { innerPadding ->
-                        NavScreens(navController, innerPadding, selectedLanguage, sharedPreferences)
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screens.Home.route,
+                            modifier = Modifier.padding(innerPadding)
+                        ) {
+                            composable(Screens.Home.route) {
+                                HomeScreen(navController, settingsApp)
+                            }
+                            composable(Screens.Favorites.route) {
+                                FavoritesScreen(navController, settingsApp)
+                            }
+                            composable(Screens.Settings.route) {
+                                SettingsScreen(settingsApp, sharedPreferences)
+                            }
+                            composable(
+                                route = Screens.Spell.route,
+                                arguments = listOf(navArgument("slug") { type = NavType.StringType })
+                            ) { backStackEntry ->
+                                val spellSlug = backStackEntry.arguments?.getString("slug")
+                                if (spellSlug != null) {
+                                    val spellDetail = getSpellDetailBySlug(spellSlug)
+                                    if (spellDetail != null) {
+                                        SpellCardScreen(
+                                            settingsApp = settingsApp,
+                                            navController = navController,
+                                            spellDetail = spellDetail,
+                                            isPinnedAndIsFavoriteScreen = Pair(true, false)
+                                        )
+                                    } else {
+                                        // Обработка случая, когда детали заклинания не найдены
+                                    }
+                                } else {
+                                    // Обработка случая, когда spellSlug является нулевым
+                                }
+                            }
+                            composable(
+                                route = Screens.FavoriteSpell.route,
+                                arguments = listOf(navArgument("slug") { type = NavType.StringType })
+                            ) { backStackEntry ->
+                                val spellSlug = backStackEntry.arguments?.getString("slug").toString()
+                                val spellDetail = getSpellDetailBySlug(spellSlug)
+                                if (spellDetail != null) {
+                                    SpellCardScreen(
+                                        settingsApp = settingsApp,
+                                        navController = navController,
+                                        spellDetail = spellDetail,
+                                        isPinnedAndIsFavoriteScreen = Pair(true, true)
+                                    )
+                                } else {
+                                    // Обработка случая, когда детали заклинания не найдены
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    @Composable
-    private fun NavScreens(
-        navController: NavHostController,
-        innerPadding: PaddingValues,
-        selectedLanguage: MutableState<String>,
-        sharedPreferences: SharedPreferences
-    ) {
-        NavHost(
-            navController = navController,
-            startDestination = Screens.Home.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(Screens.Filters.route) {
-                FiltersScreen(selectedLanguage, onApplyFilter = { _ -> })
-            }
-            composable(Screens.Home.route) {
-                HomeScreen(navController, selectedLanguage)
-            }
-            composable(Screens.Favorites.route) {
-                FavoritesScreen(navController, selectedLanguage)
-            }
-            composable(Screens.Settings.route) {
-                SettingsScreen(selectedLanguage, sharedPreferences)
-            }
-            composable(
-                route = Screens.Spell.route,
-                arguments = listOf(navArgument("slug") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val spellSlug = backStackEntry.arguments?.getString("slug")
-                if (spellSlug != null) {
-                    val spellDetail = getSpellDetailBySlug(spellSlug)
-                    if (spellDetail != null) {
-                        SpellCardScreen(
-                            selectedLanguage = selectedLanguage,
-                            navController = navController,
-                            spellDetail = spellDetail,
-                            isPinnedAndIsFavoriteScreen = Pair(true, false)
-                        )
-                    } else {
-                        // Обработка случая, когда детали заклинания не найдены
-                    }
-                } else {
-                    // Обработка случая, когда spellSlug является нулевым
-                }
-            }
-            composable(
-                route = Screens.FavoriteSpell.route,
-                arguments = listOf(navArgument("slug") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val spellSlug = backStackEntry.arguments?.getString("slug").toString()
-                val spellDetail = getSpellDetailBySlug(spellSlug)
-                if (spellDetail != null) {
-                    SpellCardScreen(
-                        selectedLanguage = selectedLanguage,
-                        navController = navController,
-                        spellDetail = spellDetail,
-                        isPinnedAndIsFavoriteScreen = Pair(true, true)
-                    )
-                } else {
-                    // Обработка случая, когда детали заклинания не найдены
-                }
-            }
+    override fun onStop() {
+        super.onStop()
+        saveSettingsToSharedPreferences()
+    }
+
+    private fun createSettingsFromSharedPreferences(): Settings {
+        val selectedLanguage = mutableStateOf(getSelectedLanguage(sharedPreferences))
+        val selectedStyle = mutableStateOf(getSelectedTheme(sharedPreferences))
+        val selectedFontSize = mutableStateOf(SpellDndSize.Medium)
+
+        return Settings(
+            selectedLanguage = selectedLanguage,
+            selectedStyle = selectedStyle,
+            selectedFontSize = selectedFontSize
+        )
+    }
+
+    private fun saveSettingsToSharedPreferences() {
+        with(sharedPreferences.edit()) {
+            putString("selectedLanguage", settingsApp.selectedLanguage.value)
+            putString("selectedStyle", settingsApp.selectedStyle.value.toString())
+            putString("selectedFontSize", settingsApp.selectedFontSize.value.name)
+            apply()
         }
     }
 }

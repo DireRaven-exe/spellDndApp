@@ -1,11 +1,14 @@
 package com.example.spellsdnd.menuActions
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -19,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.ui.theme.DarkBlueColorTheme
+import com.example.spellsdnd.ui.theme.SpellDndTheme
 
 
 /**
@@ -34,8 +38,8 @@ fun ShowMenuActions(
     menuItems: List<MenuActionsItem>
 ) {
     MaterialTheme(
-        colors = MaterialTheme.colors.copy(surface = DarkBlueColorTheme.dropdownMenuBackgroundColor),
-        shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(16))
+        colors = MaterialTheme.colors.copy(surface = SpellDndTheme.colors.secondaryBackground),
+        shapes = MaterialTheme.shapes.copy(medium = RoundedCornerShape(12))
     ) {
         DropdownMenu(
             expanded = true,
@@ -51,19 +55,6 @@ fun ShowMenuActions(
                             showMenu.value = false
                             menuItem.action()
                         },
-                        modifier = Modifier.then(if (index < itemCount - 1) {
-                            Modifier.drawWithContent {
-                                drawContent()
-                                drawLine(
-                                    color = DarkBlueColorTheme.lineColor,
-                                    strokeWidth = 1.dp.toPx(),
-                                    start = Offset(0.dp.toPx(), size.height),
-                                    end = Offset(size.width - 0.dp.toPx(), size.height)
-                                )
-                            }
-                        } else {
-                            Modifier
-                        }),
                     ) {
                         Row(
                             modifier = Modifier
@@ -73,18 +64,28 @@ fun ShowMenuActions(
                             Text(
                                 text = menuItem.title,
                                 modifier = Modifier.weight(1f),
-                                color = DarkBlueColorTheme.textColor
+                                color = SpellDndTheme.colors.primaryText
                             )
                             Icon(
                                 painter = painterResource(menuItem.icon),
                                 contentDescription = menuItem.title,
-                                tint = DarkBlueColorTheme.textColor,
+                                tint = SpellDndTheme.colors.primaryIcon,
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .padding(start = 0.dp)
                             )
                         }
                     }
+                    if (index < itemCount - 1) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .padding(start = 0.dp)
+                        ) {
+                            Divider(color = SpellDndTheme.colors.tintColor)
+                        }
+                    }
+
                 }
             }
         }

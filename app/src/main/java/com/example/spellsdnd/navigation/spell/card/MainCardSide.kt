@@ -58,18 +58,15 @@ import com.example.spellsdnd.utils.isLongText
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainCardSide(spellDetail: SpellDetail, onClick: () -> Unit, onLongClick: () -> Unit) {
-    val showMenu = remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .fillMaxSize()
             .padding(
-                top = 0.dp,
                 start = 10.dp,
                 end = 10.dp,
-                bottom = 30.dp
             )
             .aspectRatio(0.65f)
-            .wrapContentHeight()
+            //.wrapContentHeight()
             .combinedClickable (
                 onClick = { onClick.invoke() },
                 onLongClick = { onLongClick.invoke() }
@@ -79,34 +76,6 @@ fun MainCardSide(spellDetail: SpellDetail, onClick: () -> Unit, onLongClick: () 
     ) {
         DrawCardComponents(spellDetail = spellDetail)
     }
-//    if (showMenu.value) {
-//        DropdownMenu(
-//            expanded = true,
-//            onDismissRequest = { showMenu.value = false }
-//        ) {
-//            DropdownMenuItem(onClick = {
-//                // Handle "Закрепить" item click
-//                showMenu.value = false // Hide the menu after selecting an item
-//                Utils.isVisibleSpell.value = true
-//                navController.navigate(Screens.Spell(spellDetail.slug).route)
-//            }
-//            ) {
-//                Icon(
-//                    painter = painterResource(R.drawable.icon_lock),
-//                    contentDescription = "Pin Spell Card",
-//                    tint = DarkBlueColorTheme.screenInactiveColor,
-//                    modifier = Modifier.size(24.dp)
-//                )
-//                Text("Закрепить")
-//            }
-//            DropdownMenuItem(onClick = {
-//                // Handle "Добавить в избранное" item click
-//                showMenu.value = false // Hide the menu after selecting an item
-//            }) {
-//                Text("Добавить в избранное")
-//            }
-//        }
-//    }
 }
 
 /**
@@ -129,7 +98,7 @@ fun DrawCardComponents(spellDetail: SpellDetail) {
                 .padding(bottom = 16.dp) // Добавляем отступ снизу
         ) {
             Text(
-                text = spellDetail.name.uppercase(),
+                text = spellDetail.school.uppercase(),
                 style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -213,7 +182,7 @@ fun TitleBox(spellDetail: SpellDetail) {
             }
         }
         Text(
-            text = spellDetail.school.uppercase(),
+            text = spellDetail.name.uppercase(),
             style = MaterialTheme.typography.h6,
             fontWeight = FontWeight.Normal,
             fontFamily = Utils.customFont_im_fell_english_regular,

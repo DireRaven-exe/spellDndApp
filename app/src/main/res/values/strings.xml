@@ -28,10 +28,10 @@
     <string name="empty">Empty</string>
 
     <!-- BottomNavigation -->
-    <string name="filters">filters</string>
-    <string name="home">home</string>
-    <string name="favorites">favorites</string>
-    <string name="settings">settings</string>
+    <string name="filters">Filters</string>
+    <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+    <string name="settings">Settings</string>
 
     <!-- Home Screen -->
     <string name="successfully_added">Successfully added</string>
@@ -41,14 +41,14 @@
     <string name="please_wait">Please, wait…</string>
 
     <!-- TextFieldBox -->
-    <string name="cancel" tools:ignore="ButtonCase">cancel</string>
+    <string name="cancel" tools:ignore="ButtonCase">Cancel</string>
     <string name="Search_spell">Search spell…</string>
 
     <!--  Filters Screen  -->
     <string name="level">Level</string>
     <string name="school">School</string>
     <string name="dnd_class">Class</string>
-    <string name="use_filters">use filters</string>
+    <string name="use_filters">Use filters</string>
 
     <!--  InfoCardSide  -->
     <string name="range">Range</string>
@@ -57,7 +57,7 @@
     <string name="components">Components</string>
     <string name="higher_level"><b>"Higher level. "</b></string>
     <string name="material">Material</string>
-    <string name="none_material">none</string>
+    <string name="none_material">None</string>
 
     <!--    SettingsScreen    -->
     <string name="language">Language</string>
@@ -69,5 +69,13 @@
     <string name="add_to_favorites">Add to favorites</string>
     <string name="delete_from_favorites">Delete from favorites</string>
     <string name="unpin_card">Unpin card</string>
+
+
+    <string name="dark_blue">Dark Blue</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="theme">Theme</string>
+    <string name="screen_pin_card">Pinned</string>
+    <string name="add_filters">Add filters</string>
 
 </resources>

@@ -1,10 +1,13 @@
 package com.example.spellsdnd.navigation.filter
 
+import android.content.SharedPreferences
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 
 
 object DataForFilter {
+    val spellLevels = (0..9).map { it.toString() }
+
     private val listAllSchools = mutableStateListOf(
         mutableListOf( // Индекс 0 для русского языка
             "некромантия",
@@ -79,6 +82,31 @@ object DataForFilter {
     }
 }
 
+class FilterData(
+    val selectedSchools: MutableSet<String>,
+    val selectedClasses: MutableSet<String>,
+    val selectedLevels: MutableSet<Int>
+) {
+    fun saveToSharedPreferences(sharedPreferences: SharedPreferences) {
+        val editor = sharedPreferences.edit()
+        editor.putStringSet("selectedSchools", selectedSchools)
+        editor.putStringSet("selectedClasses", selectedClasses)
+        editor.putStringSet("selectedLevels", selectedLevels.map { it.toString() }.toSet())
+        editor.apply()
+    }
+
+    fun loadFromSharedPreferences(sharedPreferences: SharedPreferences) {
+        selectedSchools.clear()
+        selectedSchools.addAll(sharedPreferences.getStringSet("selectedSchools", emptySet()) ?: emptySet())
+
+        selectedClasses.clear()
+        selectedClasses.addAll(sharedPreferences.getStringSet("selectedClasses", emptySet()) ?: emptySet())
+
+        selectedLevels.clear()
+        val selectedLevelsStrSet = sharedPreferences.getStringSet("selectedLevels", emptySet()) ?: emptySet()
+        selectedLevels.addAll(selectedLevelsStrSet.mapNotNull { it.toIntOrNull() })
+    }
+}
 
 
 
