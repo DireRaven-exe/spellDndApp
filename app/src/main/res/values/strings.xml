@@ -77,5 +77,9 @@
     <string name="theme">Theme</string>
     <string name="screen_pin_card">Pinned</string>
     <string name="add_filters">Add filters</string>
+    <string name="homebrew">Homebrew</string>
+    <string name="add_card">Add card</string>
+    <string name="create_card">Create card</string>
+    <string name="cantrip">Cantrip</string>
 
 </resources>
