@@ -66,6 +66,33 @@ object DataForFilter {
         )
     )
 
+    private val listAllLevels = mutableStateListOf(
+        mutableListOf( // Индекс 0 для русского языка
+            "Заговор",
+            "1й уровень",
+            "2й уровень",
+            "3й уровень",
+            "4й уровень",
+            "5й уровень",
+            "6й уровень",
+            "7й уровень",
+            "8й уровень",
+            "9й уровень"
+        ),
+        mutableListOf( // Индекс 1 для английского языка
+            "Cantrip",
+            "1st-level",
+            "2nd-level",
+            "3rd-level",
+            "4th-level",
+            "5th-level",
+            "6th-level",
+            "7th-level",
+            "8th-level",
+            "9th-level"
+        )
+    )
+
 
     fun getListSchoolsBySelectedLanguage(selectedLanguage: MutableState<String>) : MutableList<String> {
         return when (selectedLanguage.value) {
@@ -80,33 +107,20 @@ object DataForFilter {
             else -> listAllClasses[1]
         }
     }
-}
 
-class FilterData(
-    val selectedSchools: MutableSet<String>,
-    val selectedClasses: MutableSet<String>,
-    val selectedLevels: MutableSet<Int>
-) {
-    fun saveToSharedPreferences(sharedPreferences: SharedPreferences) {
-        val editor = sharedPreferences.edit()
-        editor.putStringSet("selectedSchools", selectedSchools)
-        editor.putStringSet("selectedClasses", selectedClasses)
-        editor.putStringSet("selectedLevels", selectedLevels.map { it.toString() }.toSet())
-        editor.apply()
-    }
-
-    fun loadFromSharedPreferences(sharedPreferences: SharedPreferences) {
-        selectedSchools.clear()
-        selectedSchools.addAll(sharedPreferences.getStringSet("selectedSchools", emptySet()) ?: emptySet())
-
-        selectedClasses.clear()
-        selectedClasses.addAll(sharedPreferences.getStringSet("selectedClasses", emptySet()) ?: emptySet())
-
-        selectedLevels.clear()
-        val selectedLevelsStrSet = sharedPreferences.getStringSet("selectedLevels", emptySet()) ?: emptySet()
-        selectedLevels.addAll(selectedLevelsStrSet.mapNotNull { it.toIntOrNull() })
+    fun getListLevelBySelectedLanguage(selectedLanguage: MutableState<String>) : MutableList<String> {
+        return when (selectedLanguage.value) {
+            "ru" -> listAllLevels[0]
+            else -> listAllLevels[1]
+        }
     }
 }
+
+data class FilterData(
+    val selectedSchools: MutableState<String>,
+    val selectedClasses: MutableState<String>,
+    val selectedLevels: MutableState<String>
+)
 
 
 

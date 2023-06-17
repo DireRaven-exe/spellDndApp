@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -31,9 +32,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.spellsdnd.data.SpellDetail
-import com.example.spellsdnd.navigation.favorites.Favorites
+import com.example.spellsdnd.navigation.favorites.Favorites.getFavoritesPrefsKet
+import com.example.spellsdnd.navigation.favorites.Favorites.getFavoritesSpells
 import com.example.spellsdnd.navigation.favorites.FavoritesScreen
-import com.example.spellsdnd.navigation.filter.FiltersScreen
+import com.example.spellsdnd.navigation.favorites.Homebrew.getHomebrewItems
+import com.example.spellsdnd.navigation.favorites.Homebrew.getHomebrewPrefsKey
+import com.example.spellsdnd.navigation.favorites.loadFavoritesFromPrefs
 import com.example.spellsdnd.navigation.home.HomeScreen
 import com.example.spellsdnd.navigation.home.LoadingScreen
 import com.example.spellsdnd.navigation.navItem.bar.NavItem
@@ -52,7 +56,6 @@ import com.example.spellsdnd.utils.MutableListManager.spellsList
 import java.util.Locale
 
 
-
 class MainActivity : ComponentActivity() {
     private val isLoading = mutableStateOf(true) // Флаг состояния загрузки данных
     private lateinit var sharedPreferences: SharedPreferences
@@ -61,7 +64,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            //ПАРАМЕТРЫ
             val context = LocalContext.current
             sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
             settingsApp = createSettingsFromSharedPreferences()
@@ -82,7 +84,8 @@ class MainActivity : ComponentActivity() {
                     spellListRequest(isLoading, settingsApp.selectedLanguage.value)
                 }
 
-                Favorites.loadFavoritesFromPrefs(context)
+                loadFavoritesFromPrefs(context, getFavoritesSpells(), getFavoritesPrefsKet())
+                loadFavoritesFromPrefs(context, getHomebrewItems(), getHomebrewPrefsKey())
 
                 //НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ
                 val navController = rememberNavController()
@@ -100,13 +103,13 @@ class MainActivity : ComponentActivity() {
                         bottomBar = {
                             BottomNavigation(
                                 backgroundColor = SpellDndTheme.colors.secondaryBackground,
-                                modifier = Modifier.height(50.dp)
+                                modifier = Modifier.height(50.dp),
                             ) {
                                 navItems.forEach { item ->
                                     val selectedIconColor = if (currentScreen == item.route) {
-                                        SpellDndTheme.colors.primaryText // Цвет иконки, когда находимся на соответствующем экране
+                                        SpellDndTheme.colors.primaryText
                                     } else {
-                                        SpellDndTheme.colors.secondaryText// Цвет иконки для остальных экранов
+                                        SpellDndTheme.colors.secondaryText
                                     }
                                     BottomNavigationItem(
                                         icon = {
@@ -139,7 +142,7 @@ class MainActivity : ComponentActivity() {
                                 HomeScreen(navController, settingsApp)
                             }
                             composable(Screens.Favorites.route) {
-                                FavoritesScreen(navController, settingsApp)
+                                FavoritesScreen(navController, settingsApp, context)
                             }
                             composable(Screens.Settings.route) {
                                 SettingsScreen(settingsApp, sharedPreferences)
@@ -150,7 +153,7 @@ class MainActivity : ComponentActivity() {
                             ) { backStackEntry ->
                                 val spellSlug = backStackEntry.arguments?.getString("slug")
                                 if (spellSlug != null) {
-                                    val spellDetail = getSpellDetailBySlug(spellSlug)
+                                    val spellDetail = getSpellDetailBySlug(spellsList, spellSlug)
                                     if (spellDetail != null) {
                                         SpellCardScreen(
                                             settingsApp = settingsApp,
@@ -170,7 +173,8 @@ class MainActivity : ComponentActivity() {
                                 arguments = listOf(navArgument("slug") { type = NavType.StringType })
                             ) { backStackEntry ->
                                 val spellSlug = backStackEntry.arguments?.getString("slug").toString()
-                                val spellDetail = getSpellDetailBySlug(spellSlug)
+                                val spellDetail = getSpellDetailBySlug(spellsList, spellSlug)
+                                Log.e("slag", spellSlug)
                                 if (spellDetail != null) {
                                     SpellCardScreen(
                                         settingsApp = settingsApp,
@@ -179,7 +183,17 @@ class MainActivity : ComponentActivity() {
                                         isPinnedAndIsFavoriteScreen = Pair(true, true)
                                     )
                                 } else {
-                                    // Обработка случая, когда детали заклинания не найдены
+                                    val newSpellDetail = getNewSpellDetailBySlug(spellSlug) // Получение информации о новом заклинании
+                                    if (newSpellDetail != null) {
+                                        SpellCardScreen(
+                                            settingsApp = settingsApp,
+                                            navController = navController,
+                                            spellDetail = newSpellDetail,
+                                            isPinnedAndIsFavoriteScreen = Pair(true, true)
+                                        )
+                                    } else {
+                                        // Обработка случая, когда детали нового заклинания не найдены
+                                    }
                                 }
                             }
                         }
@@ -215,11 +229,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-//PinSpellCard(context, selectedLanguage, spellDetail!!, navController, isFavorite = true)
-fun getSpellDetailBySlug(slug: String): SpellDetail? {
+fun getSpellDetailBySlug(spellsList: SnapshotStateList<SpellDetail>, slug: String): SpellDetail? {
     return spellsList.find {
-        Log.e("slug", it.slug)
+        it.slug == slug
+    }
+}
+
+fun getNewSpellDetailBySlug(slug: String): SpellDetail? {
+    return getHomebrewItems()[0].find {
         it.slug == slug
     }
 }

@@ -2,7 +2,6 @@ package com.example.spellsdnd.navigation.navItem.bar
 
 const val SLUG = "slug"
 sealed class Screens(val route: String) {
-    object Filters : Screens("filters")
     object Home : Screens("home")
     object Favorites : Screens("favorites")
     object Settings : Screens("settings")

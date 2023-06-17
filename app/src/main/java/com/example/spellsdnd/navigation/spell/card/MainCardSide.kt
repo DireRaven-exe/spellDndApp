@@ -184,7 +184,7 @@ fun TitleBox(spellDetail: SpellDetail) {
         Text(
             text = spellDetail.name.uppercase(),
             style = MaterialTheme.typography.h6,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.Bold,
             fontFamily = Utils.customFont_im_fell_english_regular,
             color = Color.White,
             textAlign = TextAlign.Center,

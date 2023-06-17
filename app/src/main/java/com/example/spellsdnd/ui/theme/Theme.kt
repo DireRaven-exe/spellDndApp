@@ -28,7 +28,7 @@ data class SpellDndColors(
     val secondaryButtonTextColor: Color,
 
     val buttonBackgroundColor: Color,
-    val buttonColor: Color
+    val buttonContentColor: Color
 )
 data class SpellDndTypography(
     val heading: TextStyle,
@@ -89,7 +89,7 @@ fun SpellDndTheme(
             secondaryButtonTextColor = DarkBluePalette.secondaryButtonTextColor,
 
             buttonBackgroundColor = DarkBluePalette.buttonBackgroundColor,
-            buttonColor = DarkBluePalette.buttonColor
+            buttonContentColor = DarkBluePalette.buttonContentColor
         )
         SpellDndStyle.Light -> SpellDndColors(
             primaryText = baseLightPalette.primaryText,
@@ -107,7 +107,7 @@ fun SpellDndTheme(
             secondaryButtonTextColor = baseLightPalette.secondaryButtonTextColor,
 
             buttonBackgroundColor = baseLightPalette.buttonBackgroundColor,
-            buttonColor = baseLightPalette.buttonColor
+            buttonContentColor = baseLightPalette.buttonContentColor
         )
         else -> SpellDndColors(
             primaryText = baseDarkPalette.primaryText,
@@ -125,7 +125,7 @@ fun SpellDndTheme(
             secondaryButtonTextColor = baseDarkPalette.secondaryButtonTextColor,
 
             buttonBackgroundColor = baseDarkPalette.buttonBackgroundColor,
-            buttonColor = baseDarkPalette.buttonColor
+            buttonContentColor = baseDarkPalette.buttonContentColor
         )
     }
     val typography = SpellDndTypography(

@@ -26,9 +26,11 @@ import com.example.spellsdnd.R
 import com.example.spellsdnd.data.SpellDetail
 import com.example.spellsdnd.menuActions.MenuActionsItem
 import com.example.spellsdnd.menuActions.ShowMenuActions
+import com.example.spellsdnd.navigation.favorites.Favorites.getFavoritesPrefsKet
+import com.example.spellsdnd.navigation.favorites.Favorites.getFavoritesSpells
 import com.example.spellsdnd.navigation.favorites.Favorites.getListBySelectedLanguage
-import com.example.spellsdnd.navigation.favorites.Favorites.saveFavoritesToPrefs
 import com.example.spellsdnd.navigation.favorites.Favorites.setListBySelectedLanguage
+import com.example.spellsdnd.navigation.favorites.saveFavoritesToPrefs
 import com.example.spellsdnd.navigation.navItem.bar.Screens
 import com.example.spellsdnd.navigation.settings.Settings
 import com.example.spellsdnd.navigation.spell.card.InfoCardSide
@@ -95,23 +97,32 @@ fun SpellCardScreen(
             if (!isPinnedAndIsFavoriteScreen.first) {
                 FavoriteIconStateBox(settingsApp, spellDetail)
             }
-            when (cardState.value) {
-                CardState.Front -> {
-                    MainCardSide(
-                        spellDetail = spellDetail,
-                        onClick = { cardState.value = CardState.Back },
-                        onLongClick = { showMenu.value = true }
-                    )
-                }
+            ShowCardSide(cardState, spellDetail, showMenu)
+        }
+    }
+}
 
-                CardState.Back -> {
-                    InfoCardSide(
-                        spellDetail = spellDetail,
-                        onClick = { cardState.value = CardState.Front },
-                        onLongClick = { showMenu.value = true }
-                    )
-                }
-            }
+@Composable
+fun ShowCardSide(
+    cardState: MutableState<CardState>,
+    spellDetail: SpellDetail,
+    showMenu: MutableState<Boolean>
+) {
+    when (cardState.value) {
+        CardState.Front -> {
+            MainCardSide(
+                spellDetail = spellDetail,
+                onClick = { cardState.value = CardState.Back },
+                onLongClick = { showMenu.value = true }
+            )
+        }
+
+        CardState.Back -> {
+            InfoCardSide(
+                spellDetail = spellDetail,
+                onClick = { cardState.value = CardState.Front },
+                onLongClick = { showMenu.value = true }
+            )
         }
     }
 }
@@ -233,7 +244,7 @@ private fun MenuActionsContainer(
                         val updatedFavorites = selectedList.toMutableList()
                         updatedFavorites.remove(spellDetail)
                         setListBySelectedLanguage(settingsApp.selectedLanguage, updatedFavorites)
-                        saveFavoritesToPrefs(context)
+                        saveFavoritesToPrefs(context, getFavoritesSpells(), getFavoritesPrefsKet())
                         Toast.makeText(
                             context,
                             R.string.successfully_deleted,
@@ -244,7 +255,7 @@ private fun MenuActionsContainer(
                         val updatedFavorites = selectedList.toMutableList()
                         updatedFavorites.add(spellDetail)
                         setListBySelectedLanguage(settingsApp.selectedLanguage, updatedFavorites)
-                        saveFavoritesToPrefs(context)
+                        saveFavoritesToPrefs(context, getFavoritesSpells(), getFavoritesPrefsKet())
                         Toast.makeText(
                             context,
                             R.string.successfully_added,

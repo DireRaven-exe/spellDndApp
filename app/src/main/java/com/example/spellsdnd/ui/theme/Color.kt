@@ -24,7 +24,7 @@ val baseLightPalette = SpellDndColors(
     secondaryButtonTextColor = Color(0xFF354049),
 
     buttonBackgroundColor = Color(0xFF111418),
-    buttonColor = Color(0xFFFFFFFF)
+    buttonContentColor = Color(0xFFFFFFFF)
 )
 
 val baseDarkPalette = SpellDndColors(
@@ -43,7 +43,7 @@ val baseDarkPalette = SpellDndColors(
     secondaryButtonTextColor = Color(0xFF7993AA),
 
     buttonBackgroundColor = Color(0xFF03D9C5),
-    buttonColor = Color(0xFF000000)
+    buttonContentColor = Color(0xFF000000)
 )
 
 
@@ -63,7 +63,7 @@ val DarkBluePalette = SpellDndColors(
     secondaryButtonTextColor = Color(0xFF7993AA),
 
     buttonBackgroundColor = Color(0xFF03D9C5),
-    buttonColor = Color(0xFF000000)
+    buttonContentColor = Color(0xFF000000)
 )
 
 
