@@ -79,7 +79,18 @@
     <string name="screen_pin_card">Закреплено</string>
     <string name="add_filters">Добавить фильтры</string>
     <string name="homebrew">Самодельное</string>
+
+<!--    Create Card -->
     <string name="add_card">Добавить карточку</string>
     <string name="create_card">Создание карточки</string>
     <string name="cantrip">Заговор</string>
+    <string name="spellName">Название</string>
+    <string name="spellDesc">Описание</string>
+    <string name="spellHightLevel">На больших уровнях</string>
+    <string name="isRitual">Это ритуал?</string>
+    <string name="needConcentration">Нужна ли концентрация?</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+    <string name="archetype">Архетип</string>
+    <string name="accept">Принять</string>
 </resources>

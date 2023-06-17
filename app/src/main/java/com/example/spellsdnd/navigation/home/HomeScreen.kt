@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.spellsdnd.R
+import com.example.spellsdnd.navigation.filter.FilterData
 import com.example.spellsdnd.navigation.filter.FiltersScreen
 import com.example.spellsdnd.navigation.settings.Settings
 import com.example.spellsdnd.navigation.spell.SpellCardScreen
@@ -47,7 +48,11 @@ fun HomeScreen(navController: NavController, settingsApp: Settings) {
     val filterText = remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
-
+    val filterValues = FilterData(
+        selectedClasses = remember { mutableStateOf("") },
+        selectedLevels = remember { mutableStateOf("") },
+        selectedSchools = remember { mutableStateOf("") }
+    )
 
     val filteredSpells = remember {
         derivedStateOf {
@@ -74,6 +79,7 @@ fun HomeScreen(navController: NavController, settingsApp: Settings) {
         sheetState = sheetState,
         sheetContent = {
             FiltersScreen(
+                filterValues = filterValues,
                 settingsApp = settingsApp,
                 onApplyFilter = { _ -> },
                 sheetState = sheetState
@@ -87,14 +93,14 @@ fun HomeScreen(navController: NavController, settingsApp: Settings) {
                         text = {
                             Text(
                                 text = stringResource(id = R.string.add_filters),
-                                color = SpellDndTheme.colors.buttonColor
+                                color = SpellDndTheme.colors.buttonContentColor
                             )
                         },
                         icon = {
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "",
-                                tint = SpellDndTheme.colors.buttonColor
+                                tint = SpellDndTheme.colors.buttonContentColor
                             )
                         },
                         onClick = {
@@ -162,7 +168,7 @@ fun SpellLevelHeader(level: Int, isExpanded: Boolean, onClick: () -> Unit) {
             modifier = Modifier
                 .background(SpellDndTheme.colors.buttonBackgroundColor, RoundedCornerShape(12.dp)),
             text = if (level == 0) stringResource(R.string.cantrip) else stringResource(R.string.level) + " " + level,
-            color = SpellDndTheme.colors.buttonColor,
+            color = SpellDndTheme.colors.buttonContentColor,
             fontSize = SpellDndTheme.typography.heading.fontSize,
             textAlign = TextAlign.Center
         )

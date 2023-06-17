@@ -56,7 +56,7 @@ object Utils {
 fun isLongText(currentString: String) : String {
     val maxLength = 15
     return if (currentString.length > maxLength) {
-        currentString.substring(0, maxLength - 3) + "..."
+        currentString.substring(0, maxLength - 3)
     } else {
         currentString
     }

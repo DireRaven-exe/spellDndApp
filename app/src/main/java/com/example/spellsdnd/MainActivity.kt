@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            //ПАРАМЕТРЫ
             val context = LocalContext.current
             sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
             settingsApp = createSettingsFromSharedPreferences()
@@ -91,7 +90,6 @@ class MainActivity : ComponentActivity() {
                 //НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ
                 val navController = rememberNavController()
                 val navItems = listOf(
-                    //NavItem(stringResource(id = R.string.filters), R.drawable.icon_filter, Screens.Filters),
                     NavItem(stringResource(id = R.string.favorites), R.drawable.icon_favorites_not_added, Screens.Favorites),
                     NavItem(stringResource(id = R.string.home), R.drawable.icon_home, Screens.Home),
                     NavItem(stringResource(id = R.string.settings), R.drawable.icon_settings, Screens.Settings),
@@ -105,13 +103,13 @@ class MainActivity : ComponentActivity() {
                         bottomBar = {
                             BottomNavigation(
                                 backgroundColor = SpellDndTheme.colors.secondaryBackground,
-                                modifier = Modifier.height(50.dp)
+                                modifier = Modifier.height(50.dp),
                             ) {
                                 navItems.forEach { item ->
                                     val selectedIconColor = if (currentScreen == item.route) {
-                                        SpellDndTheme.colors.primaryText // Цвет иконки, когда находимся на соответствующем экране
+                                        SpellDndTheme.colors.primaryText
                                     } else {
-                                        SpellDndTheme.colors.secondaryText// Цвет иконки для остальных экранов
+                                        SpellDndTheme.colors.secondaryText
                                     }
                                     BottomNavigationItem(
                                         icon = {
@@ -140,9 +138,6 @@ class MainActivity : ComponentActivity() {
                             startDestination = Screens.Home.route,
                             modifier = Modifier.padding(innerPadding)
                         ) {
-//                            composable(Screens.Filters.route) {
-//                                TabsScreen()
-//                            }
                             composable(Screens.Home.route) {
                                 HomeScreen(navController, settingsApp)
                             }
@@ -234,18 +229,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-//PinSpellCard(context, selectedLanguage, spellDetail!!, navController, isFavorite = true)
 fun getSpellDetailBySlug(spellsList: SnapshotStateList<SpellDetail>, slug: String): SpellDetail? {
     return spellsList.find {
-        //Log.e("slug", it.slug)
         it.slug == slug
     }
 }
 
 fun getNewSpellDetailBySlug(slug: String): SpellDetail? {
     return getHomebrewItems()[0].find {
-        //Log.e("slug", it.slug)
         it.slug == slug
     }
 }

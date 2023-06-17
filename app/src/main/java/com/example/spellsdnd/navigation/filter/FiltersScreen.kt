@@ -5,7 +5,6 @@ package com.example.spellsdnd.navigation.filter
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -22,6 +22,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -29,7 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.spellsdnd.R
 import com.example.spellsdnd.data.SpellDetail
-import com.example.spellsdnd.navigation.filter.DataForFilter.spellLevels
+import com.example.spellsdnd.navigation.favorites.homebrew.CreateMultiSelectRowScrollableButtons
+import com.example.spellsdnd.navigation.filter.DataForFilter.getListClassesBySelectedLanguage
+import com.example.spellsdnd.navigation.filter.DataForFilter.getListLevelBySelectedLanguage
+import com.example.spellsdnd.navigation.filter.DataForFilter.getListSchoolsBySelectedLanguage
+import com.example.spellsdnd.navigation.settings.CreateSpacerWithDivider
 import com.example.spellsdnd.navigation.settings.Settings
 import com.example.spellsdnd.ui.theme.SpellDndTheme
 import com.example.spellsdnd.utils.MutableListManager.originalSpellsList
@@ -40,23 +46,14 @@ import kotlinx.coroutines.launch
 @SuppressLint("MutableCollectionMutableState", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun FiltersScreen(
+    filterValues: FilterData,
     settingsApp: Settings,
     onApplyFilter: (List<SpellDetail>) -> Unit,
     sheetState: ModalBottomSheetState
 ) {
-
-    val selectedSchools = remember { mutableSetOf<String>() }
-    val selectedClasses = remember { mutableSetOf<String>() }
-    val selectedLevels = remember { mutableSetOf<Int>() }
-
-    val filterData = remember {
-        FilterData(
-            selectedSchools = mutableSetOf(),
-            selectedClasses = mutableSetOf(),
-            selectedLevels = mutableSetOf()
-        )
-    }
-
+    val selectedSchools = remember { mutableStateOf("") }
+    val selectedClasses = remember { mutableStateOf("") }
+    val selectedLevels = remember { mutableStateOf("") }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -86,43 +83,26 @@ fun FiltersScreen(
                     .background(SpellDndTheme.colors.secondaryBackground)
             ) {
                 item {
-                    FilterPanel(
+                    CreateMultiSelectRowScrollableButtons(
                         label = stringResource(id = R.string.level),
-                        items = spellLevels,
-                        selectedItems = selectedLevels.map { it.toString() }.toMutableSet(),
-                        onFilterChange = { selectedItems ->
-                            selectedLevels.clear()
-                            selectedLevels.addAll(selectedItems.mapNotNull { it.toIntOrNull() })
-                        }
+                        selectedValues = selectedLevels,
+                        options = getListLevelBySelectedLanguage(settingsApp.selectedLanguage)
                     )
-                    Spacer(modifier = Modifier.height(5.dp))
-
-
-
-
+                    CreateSpacerWithDivider()
                 }
                 item {
-                    FilterPanel(
+                    CreateMultiSelectRowScrollableButtons(
                         label = stringResource(id = R.string.school),
-                        items = DataForFilter.getListSchoolsBySelectedLanguage(settingsApp.selectedLanguage),
-                        selectedItems = selectedSchools,
-                        onFilterChange = { schools ->
-                            selectedSchools.clear()
-                            selectedSchools.addAll(schools)
-                        }
+                        selectedValues = selectedSchools,
+                        options = getListSchoolsBySelectedLanguage(settingsApp.selectedLanguage)
                     )
-                    Spacer(modifier = Modifier.height(5.dp))
+                    CreateSpacerWithDivider()
                 }
-
                 item {
-                    FilterPanel(
+                    CreateMultiSelectRowScrollableButtons(
                         label = stringResource(id = R.string.dnd_class),
-                        items = DataForFilter.getListClassesBySelectedLanguage(settingsApp.selectedLanguage),
-                        selectedItems = selectedClasses,
-                        onFilterChange = { classes ->
-                            selectedClasses.clear()
-                            selectedClasses.addAll(classes)
-                        }
+                        selectedValues = selectedClasses,
+                        options = getListClassesBySelectedLanguage(settingsApp.selectedLanguage)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                 }
@@ -132,15 +112,16 @@ fun FiltersScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
+                        CancelFiltersButton(filterValues, selectedSchools, selectedClasses, selectedLevels)
+
                         ApplyFiltersButton(
                             sheetState,
-                            selectedSchools,
-                            selectedClasses,
-                            selectedLevels,
+                            filterValues,
+                            selectedSchools.value,
+                            selectedClasses.value,
+                            selectedLevels.value,
                             onApplyFilter
                         )
-
-                        CancelFiltersButton()
                     }
                 }
             }
@@ -148,22 +129,41 @@ fun FiltersScreen(
     }
 }
 
+
 /**
  * Кнопка отмены фильтров
  */
 @Composable
-private fun CancelFiltersButton() {
-    TextButton(
-        // Кнопка отмены фильтров
+private fun CancelFiltersButton(
+    filterValues: FilterData,
+    selectedSchools: MutableState<String>,
+    selectedClasses: MutableState<String>,
+    selectedLevels: MutableState<String>
+) {
+    Button(
         onClick = {
+            // Восстанавливаем исходные данные списка заклинаний
             spellsList.clear()
             spellsList.addAll(originalSpellsList)
+            // Сбрасываем выбранные значения фильтров
+            filterValues.selectedSchools.value = ""
+            filterValues.selectedClasses.value = ""
+            filterValues.selectedLevels.value = ""
+            selectedSchools.value = ""
+            selectedClasses.value = ""
+            selectedLevels.value = ""
         },
         modifier = Modifier.padding(top = 16.dp),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 10.dp,
+            pressedElevation = 15.dp,
+            disabledElevation = 0.dp
+        ),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = SpellDndTheme.colors.secondaryBackground,
+            backgroundColor = SpellDndTheme.colors.primaryBackground,
             contentColor = SpellDndTheme.colors.primaryText
-        )
+        ),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Text(stringResource(id = R.string.cancel))
     }
@@ -180,18 +180,23 @@ private fun CancelFiltersButton() {
 @Composable
 private fun ApplyFiltersButton(
     sheetState: ModalBottomSheetState,
-    selectedSchools: MutableSet<String>,
-    selectedClasses: MutableSet<String>,
-    selectedLevels: MutableSet<Int>,
+    filterValues: FilterData,
+    selectedSchools: String,
+    selectedClasses: String,
+    selectedLevels: String,
     onApplyFilter: (List<SpellDetail>) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    TextButton(
-        // Кнопка применения фильтров
+    Button(
         onClick = {
             // Фильтрация списка заклинаний по выбранным параметрам
             spellsList.removeAll { spell ->
-                !changeListByFilters(selectedSchools, selectedClasses, selectedLevels).contains(spell)
+                !changeListByFilters(
+                    spell,
+                    selectedSchools,
+                    selectedClasses,
+                    selectedLevels
+                )
             }
             onApplyFilter(spellsList) // Вызов обработчика применения фильтров
 
@@ -200,38 +205,31 @@ private fun ApplyFiltersButton(
             }
         },
         modifier = Modifier.padding(top = 16.dp),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 10.dp,
+            pressedElevation = 15.dp,
+            disabledElevation = 0.dp
+        ),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = SpellDndTheme.colors.secondaryBackground,
-            contentColor = SpellDndTheme.colors.primaryText,
-        )
+            backgroundColor = SpellDndTheme.colors.primaryBackground,
+            contentColor = SpellDndTheme.colors.primaryText
+        ),
+        shape = RoundedCornerShape(12.dp)
     ) {
-        Text(stringResource(id = R.string.use_filters))
+        Text(stringResource(id = R.string.accept))
     }
 }
 
-/**
- * Метод, который фильтрует список по выбранным параметрам
- * @param selectedClasses - выбранные классы
- * @param selectedLevels - выбранные уровни
- * @param selectedSchools - выбранные школы
- */
 private fun changeListByFilters(
-    selectedSchools: MutableSet<String>,
-    selectedClasses: MutableSet<String>,
-    selectedLevels: MutableSet<Int>
-): List<SpellDetail> {
-    val filteredList = spellsList.filter { spell ->
-        val schoolFilter = selectedSchools.isEmpty() ||
-                selectedSchools.contains(spell.school.lowercase())
-        val classFilter = spell.dnd_class.split(", ").map { className ->
-            className
-        }.any { dndClass ->
-            dndClass in selectedClasses || selectedClasses.isEmpty()
-        }
-        val levelFilter = selectedLevels.isEmpty() ||
-                selectedLevels.contains(spell.level_int)
-        schoolFilter && classFilter && levelFilter
+    spell: SpellDetail,
+    selectedSchools: String,
+    selectedClasses: String,
+    selectedLevels: String
+): Boolean {
+    val schoolFilter = selectedSchools.isEmpty() || selectedSchools.contains(spell.school.lowercase())
+    val classFilter = spell.dnd_class.split(", ").any { dndClass ->
+        dndClass in selectedClasses || selectedClasses.isEmpty()
     }
-    return filteredList
+    val levelFilter = selectedLevels.isEmpty() || selectedLevels.contains(spell.level)
+    return schoolFilter && classFilter && levelFilter
 }
-

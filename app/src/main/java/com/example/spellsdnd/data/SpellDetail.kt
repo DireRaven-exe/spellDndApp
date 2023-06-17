@@ -1,5 +1,7 @@
 package com.example.spellsdnd.data
 
+import androidx.compose.runtime.MutableState
+
 
 /**
  * Класс, который хранит информацию об отдельной карточке с заклинанием
@@ -47,5 +49,26 @@ data class SpellDetail(
     var document__slug: String,
     var document__title: String,
     var document__license_url: String,
+)
+
+data class SpellCreationState(
+    val slug: MutableState<String>,
+    val name: MutableState<String>,
+    val desc: MutableState<String>,
+    val higherLevel: MutableState<String>,
+    val page: MutableState<String>,
+    val range: MutableState<String>,
+    val components: MutableState<String>,
+    val material: MutableState<String>,
+    val ritual: MutableState<String>,
+    val duration: MutableState<String>,
+    val concentration: MutableState<String>,
+    val castingTime: MutableState<String>,
+    val level: MutableState<String>,
+    val levelInt: MutableState<Int>,
+    val plug: MutableState<Int>, //заглушка
+    val school: MutableState<String>,
+    val dndClass: MutableState<String>,
+    val archetype: MutableState<String>
 )
 
